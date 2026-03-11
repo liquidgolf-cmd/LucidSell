@@ -356,8 +356,8 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
 .progress-bar-wrap { margin-bottom: 56px; }
 .progress-bar-track { height: 3px; background: var(--border); border-radius: 2px; }
 .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
-.ob-step { display: none; }
-.ob-step.active { display: block; }
+.ob-step { display: none; opacity: 1; visibility: visible; }
+.ob-step.active { display: block !important; opacity: 1; visibility: visible; min-height: 200px; }
 .ob-step-num { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
 .ob-title { font-family: var(--serif); font-size: clamp(32px, 3vw, 48px); font-weight: 400; line-height: 1.1; margin-bottom: 12px; }
 .ob-sub { font-size: 17px; color: var(--muted); line-height: 1.65; margin-bottom: 36px; }
@@ -1415,6 +1415,14 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
   window.scrollTo(0, 0);
+  // Ensure onboarding has one step active so content is visible
+  if (id === 'onboarding') {
+    var activeStep = el.querySelector('.ob-step.active');
+    if (!activeStep) {
+      var first = document.getElementById('ob1');
+      if (first) { first.classList.add('active'); document.getElementById('ob-fill').style.width = '16%'; document.getElementById('ob-step-label').textContent = 'Step 1 of 6'; document.getElementById('ob-pct').textContent = '16%'; }
+    }
+  }
   // Re-trigger fade-ins
   setTimeout(function() {
     document.querySelectorAll('#'+id+' .fade-in').forEach(function(e) { e.classList.add('visible'); });
