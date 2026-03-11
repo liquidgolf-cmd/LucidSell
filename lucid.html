@@ -137,9 +137,29 @@ body::before {
 .cursor.large { width: 40px; height: 40px; opacity: 0.5; }
 
 /* NAV */
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 60px; background: rgba(244,241,235,0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
-.nav-logo { font-family: var(--sans); font-weight: 900; font-size: 22px; letter-spacing: -0.04em; color: var(--ink); }
-.nav-logo em { font-style: normal; display: inline-block; background: var(--accent); color: var(--paper); padding: 1px 7px; margin-left: 1px; }
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px 0 148px;
+  height: 60px;
+  background: rgba(244,241,235,0.94);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  background-image: url('lucid_logo.png');
+  background-repeat: no-repeat;
+  background-position: 32px center;
+  background-size: auto 54px;
+}
+
+nav > img {
+  display: none;
+}
 .nav-right { display: flex; align-items: center; gap: 28px; }
 .nav-link { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); text-decoration: none; transition: color 0.15s; background: none; border: none; }
 .nav-link:hover { color: var(--ink); }
