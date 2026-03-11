@@ -7,6 +7,7 @@ This project is implemented as a static HTML/CSS/JS app, currently contained in 
 
 - `index.html` — tiny entry file that redirects `/` to `lucid.html` so that platforms like Vercel can serve the app at the root URL.
 - `lucid.html` — the full Lucid experience (markup, styles, and scripts all in one file).
+- `lucid-logo.png` — nav logo asset. **Add this file** to the project root (same folder as `lucid.html`) for the header logo to display; the site references it at `lucid-logo.png`.
 
 You can open `lucid.html` directly in a browser, or use the `index.html` entry point when deploying.
 
