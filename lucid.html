@@ -167,7 +167,7 @@ nav {
 
 /* SCREENS */
 .screen { display: none; padding-top: 126px; }
-.screen.active { display: block; }
+.screen.active { display: block; min-height: calc(100vh - 126px); }
 
 /* ======== HOME ======== */
 /* HERO */
@@ -1410,12 +1410,14 @@ document.querySelectorAll('button, a, input, select').forEach(el => {
 
 // SCREENS
 function showScreen(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
   window.scrollTo(0, 0);
   // Re-trigger fade-ins
-  setTimeout(() => {
-    document.querySelectorAll('#'+id+' .fade-in').forEach(el => el.classList.add('visible'));
+  setTimeout(function() {
+    document.querySelectorAll('#'+id+' .fade-in').forEach(function(e) { e.classList.add('visible'); });
   }, 100);
 }
 
