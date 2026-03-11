@@ -147,16 +147,18 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 0 48px;
-  height: 120px;
+  height: 80px;
   background: rgba(244,241,235,0.94);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
 }
 
 nav > img {
-  height: 108px;
+  height: 72px;
   content: url('lucid-logo.png');
   display: block;
+  transform: scale(1.5);
+  transform-origin: left center;
 }
 .nav-right { display: flex; align-items: center; gap: 28px; }
 .nav-link { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); text-decoration: none; transition: color 0.15s; background: none; border: none; }
