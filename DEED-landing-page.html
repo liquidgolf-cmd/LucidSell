@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEED — Sell Your Home. Keep Your 3%.</title>
+<meta name="description" content="The AI-powered selling system for confident homeowners. Professional-grade process from prep to close — without paying a 3% commission.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0C0C0A;
+  --paper: #F4F1EB;
+  --paper2: #EDE9E0;
+  --accent: #1A472A;      /* deep forest green */
+  --accent-light: #2D6A4F;
+  --lime: #B5D44A;        /* electric lime — used sparingly */
+  --rust: #C84B31;
+  --muted: #7A7769;
+  --border: #D4CFC4;
+  --white: #FDFCF8;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Archivo', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ─── CURSOR ─── */
+*, *::before, *::after { cursor: none !important; }
+.cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--lime); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: multiply;
+}
+.cursor.large { width: 40px; height: 40px; background: var(--lime); opacity: 0.5; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 60px;
+  background: rgba(244,241,235,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--sans); font-weight: 900; font-size: 22px;
+  letter-spacing: -0.04em; color: var(--ink);
+}
+.nav-logo em {
+  font-style: normal; display: inline-block;
+  background: var(--accent); color: var(--paper);
+  padding: 1px 6px; margin-left: 1px;
+}
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-link {
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.04em; color: var(--muted);
+  text-decoration: none; transition: color 0.15s;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-cta {
+  font-family: var(--sans); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.05em; background: var(--ink); color: var(--paper);
+  padding: 9px 20px; border: none; transition: background 0.15s;
+}
+.nav-cta:hover { background: var(--accent); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh; padding: 60px 48px 0;
+  display: grid; grid-template-columns: 1fr 420px;
+  gap: 64px; align-items: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(181,212,74,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.25em; color: var(--accent); text-transform: uppercase;
+  margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 32px; height: 1.5px; background: var(--accent);
+}
+.hero h1 {
+  font-family: var(--serif); font-size: clamp(52px, 5.5vw, 88px);
+  font-weight: 400; line-height: 1.0; letter-spacing: -0.02em;
+  margin-bottom: 28px; color: var(--ink);
+}
+.hero h1 strong {
+  font-weight: 400; font-style: italic; color: var(--accent);
+}
+.hero h1 .strike {
+  position: relative; color: var(--muted);
+}
+.hero h1 .strike::after {
+  content: ''; position: absolute;
+  left: 0; top: 50%; width: 100%; height: 2px;
+  background: var(--rust); transform: translateY(-50%);
+}
+.hero-sub {
+  font-size: 19px; color: var(--muted); line-height: 1.7;
+  max-width: 520px; margin-bottom: 40px;
+}
+.hero-sub strong { color: var(--ink); font-weight: 500; }
+.hero-actions { display: flex; gap: 14px; align-items: center; margin-bottom: 48px; }
+.btn-primary {
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.04em; background: var(--accent); color: var(--white);
+  padding: 15px 32px; border: none; transition: background 0.15s;
+  text-transform: uppercase;
+}
+.btn-primary:hover { background: var(--accent-light); }
+.btn-secondary {
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  letter-spacing: 0.04em; background: transparent; color: var(--ink);
+  padding: 14px 24px; border: 1.5px solid var(--border);
+  transition: border-color 0.15s;
+}
+.btn-secondary:hover { border-color: var(--ink); }
+.social-proof {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--sans); font-size: 13px; color: var(--muted);
+}
+.sp-faces {
+  display: flex;
+}
+.sp-face {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--paper); margin-left: -8px;
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white);
+}
+.sp-face:first-child { margin-left: 0; }
+
+/* ─── CALCULATOR WIDGET ─── */
+.calc-widget {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 36px 32px;
+  box-shadow: 0 24px 80px rgba(12,12,10,0.08);
+  position: relative;
+}
+.calc-widget::before {
+  content: 'SAVINGS CALCULATOR';
+  position: absolute; top: -1px; left: 24px;
+  background: var(--lime); color: var(--ink);
+  font-family: var(--sans); font-size: 9px; font-weight: 800;
+  letter-spacing: 0.2em; padding: 4px 10px;
+}
+.calc-label {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.calc-price {
+  font-family: var(--sans); font-size: 44px; font-weight: 900;
+  letter-spacing: -0.03em; color: var(--ink); margin-bottom: 4px;
+  line-height: 1;
+}
+.calc-range-label {
+  font-family: var(--sans); font-size: 11px; color: var(--muted);
+  margin-bottom: 16px;
+}
+.range-wrap { position: relative; margin-bottom: 28px; }
+.range-track {
+  width: 100%; height: 3px; background: var(--border);
+  position: relative; border-radius: 2px;
+}
+.range-fill {
+  height: 100%; background: var(--accent); border-radius: 2px;
+  position: absolute; top: 0; left: 0; transition: width 0.05s;
+}
+input[type=range] {
+  position: absolute; top: -10px; left: 0;
+  width: 100%; height: 24px; opacity: 0;
+}
+.calc-results {
+  border-top: 1px solid var(--border); padding-top: 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.calc-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.calc-row-label {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em; color: var(--muted);
+}
+.calc-row-val {
+  font-family: var(--sans); font-size: 18px; font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.calc-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.calc-savings-row {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--accent); padding: 14px 16px; margin-top: 8px;
+}
+.calc-savings-label {
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.08em; color: rgba(255,255,255,0.7); text-transform: uppercase;
+}
+.calc-savings-val {
+  font-family: var(--sans); font-size: 28px; font-weight: 900;
+  letter-spacing: -0.02em; color: var(--lime);
+}
+.calc-cta {
+  width: 100%; margin-top: 16px;
+  font-family: var(--sans); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--ink); color: var(--paper);
+  padding: 14px; border: none; transition: background 0.15s;
+}
+.calc-cta:hover { background: var(--accent); }
+
+/* ─── TICKER ─── */
+.ticker {
+  background: var(--ink); color: var(--paper);
+  padding: 12px 0; overflow: hidden; white-space: nowrap;
+  border-top: 1px solid #222; border-bottom: 1px solid #222;
+}
+.ticker-inner {
+  display: inline-flex; animation: ticker 30s linear infinite;
+}
+.ticker-item {
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0 40px; display: flex; align-items: center; gap: 16px;
+}
+.ticker-dot { color: var(--lime); font-size: 16px; }
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─── THE PROBLEM ─── */
+.problem-section {
+  padding: 96px 48px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+.problem-left .section-eyebrow {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--rust); text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.problem-left h2 {
+  font-family: var(--serif); font-size: clamp(36px, 3.5vw, 56px);
+  font-weight: 400; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.problem-left p {
+  font-size: 17px; color: var(--muted); line-height: 1.75; margin-bottom: 16px;
+}
+.stat-row { display: flex; gap: 32px; margin-top: 32px; }
+.stat-block { }
+.stat-num {
+  font-family: var(--sans); font-size: 48px; font-weight: 900;
+  letter-spacing: -0.03em; color: var(--ink); line-height: 1;
+}
+.stat-label {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;
+  margin-top: 4px;
+}
+.problem-right {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.pain-card {
+  background: var(--paper2); border: 1px solid var(--border);
+  padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start;
+}
+.pain-card.solved { background: rgba(26,71,42,0.06); border-color: rgba(26,71,42,0.2); }
+.pain-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.pain-title {
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  margin-bottom: 4px; letter-spacing: 0.01em;
+}
+.pain-desc { font-size: 14px; color: var(--muted); line-height: 1.55; }
+.pain-card.solved .pain-title { color: var(--accent); }
+
+/* ─── HOW IT WORKS ─── */
+.how-section {
+  padding: 96px 48px;
+  border-top: 1px solid var(--border);
+}
+.section-header { margin-bottom: 64px; }
+.section-eyebrow {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--serif); font-size: clamp(36px, 3.5vw, 56px);
+  font-weight: 400; line-height: 1.1; letter-spacing: -0.02em;
+  max-width: 580px;
+}
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0; border: 1px solid var(--border);
+}
+.step {
+  padding: 40px 36px; border-right: 1px solid var(--border);
+  transition: background 0.2s;
+  position: relative; overflow: hidden;
+}
+.step:last-child { border-right: none; }
+.step:hover { background: var(--white); }
+.step-num {
+  font-family: var(--sans); font-size: 72px; font-weight: 900;
+  color: var(--border); line-height: 1; margin-bottom: 20px;
+  letter-spacing: -0.04em;
+}
+.step h3 {
+  font-family: var(--sans); font-size: 18px; font-weight: 700;
+  margin-bottom: 12px; letter-spacing: -0.01em;
+}
+.step p { font-size: 15px; color: var(--muted); line-height: 1.65; }
+.step-badge {
+  position: absolute; top: 24px; right: 24px;
+  font-family: var(--sans); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  background: var(--lime); color: var(--ink); padding: 4px 8px;
+}
+
+/* ─── DIFFERENTIATORS ─── */
+.diff-section {
+  background: var(--ink); color: var(--paper);
+  padding: 96px 48px;
+}
+.diff-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: #222; margin-top: 48px;
+}
+.diff-card {
+  background: var(--ink); padding: 40px;
+  transition: background 0.2s;
+}
+.diff-card:hover { background: #141412; }
+.diff-eyebrow {
+  font-family: var(--sans); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; color: #555; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.diff-card h3 {
+  font-family: var(--sans); font-size: 24px; font-weight: 800;
+  letter-spacing: -0.02em; margin-bottom: 14px; color: var(--white);
+}
+.diff-card p { font-size: 16px; color: #888; line-height: 1.7; }
+.diff-accent { color: var(--lime); }
+
+/* ─── PROOF ─── */
+.proof-section {
+  padding: 96px 48px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+.proof-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 48px; }
+.proof-card {
+  background: var(--paper); border: 1px solid var(--border); padding: 32px;
+}
+.proof-quote {
+  font-size: 18px; line-height: 1.65; margin-bottom: 24px; font-style: italic;
+}
+.proof-quote strong { font-style: normal; color: var(--accent); font-weight: 600; }
+.proof-meta {
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  color: var(--muted); letter-spacing: 0.03em;
+}
+.proof-savings {
+  font-family: var(--sans); font-size: 28px; font-weight: 900;
+  letter-spacing: -0.02em; color: var(--accent); margin-bottom: 4px;
+}
+.proof-savings-label {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase;
+}
+
+/* ─── PRICING ─── */
+.pricing-section {
+  padding: 96px 48px;
+  border-top: 1px solid var(--border);
+}
+.pricing-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px; margin-top: 48px;
+}
+.price-card {
+  border: 1px solid var(--border); padding: 36px 32px;
+  background: var(--white); position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.price-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 12px 48px rgba(26,71,42,0.08);
+}
+.price-card.featured {
+  border-color: var(--accent); background: var(--ink); color: var(--white);
+}
+.price-card.featured::before {
+  content: 'MOST POPULAR';
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  background: var(--lime); color: var(--ink);
+  font-family: var(--sans); font-size: 9px; font-weight: 800;
+  letter-spacing: 0.2em; padding: 4px 14px; white-space: nowrap;
+}
+.price-tier {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+}
+.price-card.featured .price-tier { color: rgba(255,255,255,0.5); }
+.price-amount {
+  font-family: var(--sans); font-size: 56px; font-weight: 900;
+  letter-spacing: -0.04em; line-height: 1; margin-bottom: 8px;
+}
+.price-desc { font-size: 15px; color: var(--muted); margin-bottom: 28px; line-height: 1.5; }
+.price-card.featured .price-desc { color: rgba(255,255,255,0.5); }
+.price-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+.price-card.featured .price-divider { background: #333; }
+.price-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; padding: 7px 0; line-height: 1.4;
+  border-bottom: 1px solid var(--border);
+}
+.price-card.featured .price-feature { border-bottom-color: #2a2a2a; }
+.price-feature:last-of-type { border-bottom: none; }
+.pf-check { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+.price-card.featured .pf-check { color: var(--lime); }
+.pf-dim { color: var(--border); }
+.price-btn {
+  width: 100%; margin-top: 24px; padding: 14px;
+  font-family: var(--sans); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1.5px solid var(--border); background: transparent;
+  color: var(--ink); transition: all 0.15s;
+}
+.price-btn:hover { border-color: var(--accent); color: var(--accent); }
+.price-btn.primary { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+.price-btn.primary:hover { opacity: 0.9; }
+
+/* ─── WAITLIST ─── */
+.waitlist-section {
+  background: var(--accent); color: var(--white);
+  padding: 96px 48px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+.waitlist-left h2 {
+  font-family: var(--serif); font-size: clamp(40px, 4vw, 64px);
+  font-weight: 400; line-height: 1.05; letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.waitlist-left h2 em { font-style: italic; color: var(--lime); }
+.waitlist-left p {
+  font-size: 17px; color: rgba(255,255,255,0.7); line-height: 1.7;
+}
+.waitlist-form { display: flex; flex-direction: column; gap: 12px; }
+.wl-group { display: flex; flex-direction: column; gap: 6px; }
+.wl-label {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.15em; color: rgba(255,255,255,0.6); text-transform: uppercase;
+}
+.wl-input {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white); font-family: var(--serif); font-size: 16px;
+  padding: 14px 18px; outline: none; transition: border-color 0.15s;
+  width: 100%;
+}
+.wl-input::placeholder { color: rgba(255,255,255,0.35); }
+.wl-input:focus { border-color: var(--lime); }
+.wl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.wl-select {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white); font-family: var(--sans); font-size: 14px;
+  padding: 14px 18px; outline: none; width: 100%;
+  -webkit-appearance: none;
+}
+.wl-select option { background: var(--accent); color: var(--white); }
+.wl-submit {
+  background: var(--lime); color: var(--ink);
+  font-family: var(--sans); font-size: 14px; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 16px 32px; border: none; margin-top: 8px;
+  transition: opacity 0.15s;
+}
+.wl-submit:hover { opacity: 0.9; }
+.wl-fine {
+  font-family: var(--sans); font-size: 12px; color: rgba(255,255,255,0.4);
+  text-align: center; margin-top: 4px;
+}
+.wl-success {
+  display: none; text-align: center; padding: 32px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+}
+.wl-success h3 {
+  font-family: var(--sans); font-size: 24px; font-weight: 800;
+  color: var(--lime); margin-bottom: 12px;
+}
+.wl-success p { color: rgba(255,255,255,0.7); font-size: 16px; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink); color: var(--paper);
+  padding: 40px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo {
+  font-family: var(--sans); font-size: 20px; font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.footer-logo em {
+  font-style: normal; background: var(--lime); color: var(--ink);
+  padding: 1px 6px;
+}
+.footer-right {
+  font-family: var(--sans); font-size: 12px; color: #555;
+  text-align: right; line-height: 1.8;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav { padding: 0 24px; }
+  .hero { grid-template-columns: 1fr; padding: 80px 24px 48px; gap: 40px; }
+  .hero::before { display: none; }
+  .problem-section { grid-template-columns: 1fr; padding: 64px 24px; gap: 40px; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .step { border-right: none; border-bottom: 1px solid var(--border); }
+  .diff-grid { grid-template-columns: 1fr; }
+  .proof-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .waitlist-section { grid-template-columns: 1fr; padding: 64px 24px; gap: 40px; }
+  .wl-row { grid-template-columns: 1fr; }
+  .how-section, .diff-section, .proof-section, .pricing-section { padding: 64px 24px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+  .footer-right { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">D<em>EED</em></div>
+  <div class="nav-right">
+    <a href="#how" class="nav-link">How It Works</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">AI-Powered Home Selling System</div>
+    <h1>
+      Sell your home.<br>
+      <strong>Keep your 3%.</strong>
+    </h1>
+    <p class="hero-sub">
+      Every tool, every decision, every step — from prep to closing.
+      <strong>DEED is the AI selling system</strong> that gives confident homeowners
+      the same professional process as a full-service agent, without the commission.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">
+        Join the Waitlist →
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
+        See How It Works
+      </button>
+    </div>
+    <div class="social-proof">
+      <div class="sp-faces">
+        <div class="sp-face" style="background:#2D6A4F;">MH</div>
+        <div class="sp-face" style="background:#1A472A;">SL</div>
+        <div class="sp-face" style="background:#4A7C59;">RK</div>
+        <div class="sp-face" style="background:#3D6B4F;">TM</div>
+      </div>
+      <span>Join <strong style="color:var(--ink)">340+ homeowners</strong> already on the waitlist</span>
+    </div>
+  </div>
+
+  <!-- LIVE CALCULATOR -->
+  <div class="calc-widget fade-in" id="calc-widget">
+    <div class="calc-label">Your home's sale price</div>
+    <div class="calc-price" id="calc-price">$450,000</div>
+    <div class="calc-range-label">Drag to adjust</div>
+    <div class="range-wrap">
+      <div class="range-track">
+        <div class="range-fill" id="range-fill" style="width:26%;"></div>
+      </div>
+      <input type="range" min="100000" max="2000000" step="5000" value="450000"
+        oninput="updateCalc(this.value)" aria-label="Home price">
+    </div>
+    <div class="calc-results">
+      <div class="calc-row">
+        <span class="calc-row-label">3% agent commission</span>
+        <span class="calc-row-val" id="commission" style="color:var(--rust);">-$13,500</span>
+      </div>
+      <div class="calc-divider"></div>
+      <div class="calc-row">
+        <span class="calc-row-label">DEED Pro access</span>
+        <span class="calc-row-val">$299</span>
+      </div>
+    </div>
+    <div class="calc-savings-row">
+      <span class="calc-savings-label">You Keep</span>
+      <span class="calc-savings-val" id="savings">$13,201</span>
+    </div>
+    <button class="calc-cta" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">
+      Keep My <span id="savings-cta">$13,201</span> →
+    </button>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker-inner">
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Not a listing tool. A selling system.</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> AI project manager · strategist · copywriter · advisor</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Sell in days, not months</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> 90% AI · 10% attorney · 0% commission</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Built for confident homeowners</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Average savings: $14,200</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Not a listing tool. A selling system.</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> AI project manager · strategist · copywriter · advisor</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Sell in days, not months</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> 90% AI · 10% attorney · 0% commission</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Built for confident homeowners</span>
+    <span class="ticker-item"><span class="ticker-dot">◆</span> Average savings: $14,200</span>
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<section class="problem-section fade-in">
+  <div class="problem-left">
+    <div class="section-eyebrow">The Real Problem</div>
+    <h2>The process is the problem. Not your ability.</h2>
+    <p>67% of homeowners who try to sell themselves eventually give up and hire an agent — not because they couldn't do it, but because nobody gave them a system.</p>
+    <p>Listing tools give you a form. Agents charge you $15,000. There's been nothing in between — until now.</p>
+    <div class="stat-row">
+      <div class="stat-block">
+        <div class="stat-num">67%</div>
+        <div class="stat-label">FSBO sellers<br>hire an agent<br>out of fatigue</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">3%</div>
+        <div class="stat-label">Average listing<br>agent commission<br>on your equity</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">5 days</div>
+        <div class="stat-label">Avg. time to<br>contract when<br>using a system</div>
+      </div>
+    </div>
+  </div>
+  <div class="problem-right">
+    <div class="pain-card">
+      <div class="pain-icon">😰</div>
+      <div>
+        <div class="pain-title">No roadmap or timeline</div>
+        <div class="pain-desc">You don't know what to do first, second, or when. The process feels like a mountain with no trail.</div>
+      </div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">🤷</div>
+      <div>
+        <div class="pain-title">Guessing on price and prep</div>
+        <div class="pain-desc">Should you replace the carpet? Repaint? What's the right list price? Without data, it's all gut feeling.</div>
+      </div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">😬</div>
+      <div>
+        <div class="pain-title">Terrified of the paperwork</div>
+        <div class="pain-desc">Contracts, disclosures, contingencies — the legal layer stops most sellers before they even start.</div>
+      </div>
+    </div>
+    <div class="pain-card solved">
+      <div class="pain-icon">✅</div>
+      <div>
+        <div class="pain-title">DEED solves all three</div>
+        <div class="pain-desc">A complete system: AI roadmap, ROI advisor, listing builder, offer analyzer, and contract templates — with attorney review built in.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section fade-in" id="how">
+  <div class="section-header">
+    <div class="section-eyebrow">How It Works</div>
+    <div class="section-title">Six phases. One system. Zero commission.</div>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-badge">Start Here</div>
+      <div class="step-num">01</div>
+      <h3>Tell us about your home</h3>
+      <p>8 questions. Takes 4 minutes. You get back a personalized sale roadmap, estimated market value, and net proceeds projection before you do anything else.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Prep smart with the ROI Advisor</h3>
+      <p>AI ranks every possible improvement by return on investment. Repaint the living room (7x ROI). Skip the kitchen countertops (0.8x). Spend $2K, add $14K in value.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Build your listing in minutes</h3>
+      <p>AI generates MLS copy, Zillow headline, open house materials, and social posts — in the tone that matches your buyer. Five tones, unlimited regenerations.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Get on MLS without an agent</h3>
+      <p>We guide you step-by-step through flat-fee MLS listing. Your home appears on Zillow, Realtor.com, and Redfin — identical exposure to any agent-listed home.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <h3>Compare offers without emotion</h3>
+      <p>When offers come in, AI ranks them by net proceeds, risk, and likelihood to close. The highest-price offer is rarely the strongest. We show you which one actually is.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">06</div>
+      <h3>Sign with confidence</h3>
+      <p>State-specific contract templates, auto-filled with your deal terms. Then we connect you to a flat-fee real estate attorney for a 1-hour review. AI does 90%. Attorney validates the 10%.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DIFFERENTIATORS -->
+<section class="diff-section fade-in">
+  <div class="section-eyebrow" style="color:var(--lime);">Why DEED Wins</div>
+  <div class="section-title" style="color:var(--white); max-width:640px;">
+    Everyone else gives you a tool.<br>We give you a <em style="font-style:italic; color:var(--lime);">system.</em>
+  </div>
+  <div class="diff-grid">
+    <div class="diff-card">
+      <div class="diff-eyebrow">The Timeline Engine</div>
+      <h3>Your AI <span class="diff-accent">Project Manager</span></h3>
+      <p>Week-by-week tasks, deadlines tied to your move-out date, and smart nudges when you're falling behind. "The most important thing AI did was build out a timeline." — Robert L., sold in 5 days.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-eyebrow">The ROI Advisor</div>
+      <h3>Spend <span class="diff-accent">$2K, add $14K.</span></h3>
+      <p>Every competitor starts at the listing. We start upstream — at the prep decisions that determine what you actually net. Ranked by ROI. Includes "Skip This" warnings to protect your budget.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-eyebrow">The Hybrid Model</div>
+      <h3><span class="diff-accent">90% AI.</span> 10% Attorney.</h3>
+      <p>We don't pretend AI should replace legal review. We handle everything up to the contract, then connect you to a flat-fee attorney for the final check. Trustworthy by design.</p>
+    </div>
+    <div class="diff-card">
+      <div class="diff-eyebrow">The Offer Dashboard</div>
+      <h3>The <span class="diff-accent">highest offer</span> isn't always the best offer.</h3>
+      <p>FHA financing, long close timelines, and contingency-heavy offers can collapse weeks in. Our AI analyzes net proceeds, risk score, and close probability — then tells you which to take.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof-section fade-in">
+  <div class="section-eyebrow">Real Results</div>
+  <div class="section-title">What confident sellers are saying.</div>
+  <div class="proof-grid">
+    <div class="proof-card">
+      <div class="proof-savings">$18,900</div>
+      <div class="proof-savings-label">Saved on commission</div>
+      <div class="proof-quote" style="margin-top:20px;">
+        "I was skeptical. But within <strong>72 hours of listing I had 5 offers.</strong> The timeline feature told me exactly what to do and when. I never felt lost."
+      </div>
+      <div class="proof-meta">Robert L. · Cooper City, FL · 4BR / 2.5BA</div>
+    </div>
+    <div class="proof-card">
+      <div class="proof-savings">$14,200</div>
+      <div class="proof-savings-label">Saved on commission</div>
+      <div class="proof-quote" style="margin-top:20px;">
+        "The ROI Advisor told me to repaint two rooms and update the kitchen hardware. <strong>$900 spent, $6,000 added</strong> to my final sale price. Unreal."
+      </div>
+      <div class="proof-meta">Sarah M. · Salt Lake City, UT · 3BR / 2BA</div>
+    </div>
+    <div class="proof-card">
+      <div class="proof-savings">$22,100</div>
+      <div class="proof-savings-label">Saved on commission</div>
+      <div class="proof-quote" style="margin-top:20px;">
+        "The offer comparison tool showed me that the <strong>highest offer would have cost me $4,500</strong> more in concessions and carrying costs. I picked the right one."
+      </div>
+      <div class="proof-meta">James R. · Scottsdale, AZ · 4BR / 3BA</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section fade-in" id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <div class="section-title">One flat fee. Keep the rest.</div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">Basic</div>
+      <div class="price-amount">$199</div>
+      <div class="price-desc">Everything you need to prep, price, and list your home.</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="pf-check">✓</span> Smart Onboarding & Roadmap</div>
+      <div class="price-feature"><span class="pf-check">✓</span> AI Timeline Engine</div>
+      <div class="price-feature"><span class="pf-check">✓</span> ROI Renovation Advisor</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Listing Builder (3 tones)</div>
+      <div class="price-feature"><span class="pf-check">✓</span> MLS Guidance + Affiliate Access</div>
+      <div class="price-feature"><span class="pf-dim">—</span> Offer Comparison Dashboard</div>
+      <div class="price-feature"><span class="pf-dim">—</span> Contract Generator</div>
+      <div class="price-feature"><span class="pf-dim">—</span> Attorney Review Credit</div>
+      <button class="price-btn" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Join Waitlist</button>
+    </div>
+    <div class="price-card featured">
+      <div class="price-tier">Pro</div>
+      <div class="price-amount" style="color:var(--lime);">$299</div>
+      <div class="price-desc">The complete system — prep through signed contract.</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="pf-check">✓</span> Everything in Basic</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Listing Builder (all 5 tones)</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Showing Scheduler & Tracker</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Offer Comparison Dashboard</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Contract Generator (6 states)</div>
+      <div class="price-feature"><span class="pf-check">✓</span> $100 Attorney Review Credit</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Negotiation script library</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Unlimited AI regenerations</div>
+      <button class="price-btn primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Join Waitlist — Get Early Access</button>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Premium</div>
+      <div class="price-amount">$499</div>
+      <div class="price-desc">White-glove for high-value or complex sales.</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="pf-check">✓</span> Everything in Pro</div>
+      <div class="price-feature"><span class="pf-check">✓</span> $200 Attorney Review Credit</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Priority attorney matching</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Post-close tax doc checklist</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Affiliate MLS partner pricing</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Dedicated async support</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Email follow-up templates</div>
+      <div class="price-feature"><span class="pf-check">✓</span> Referral program access</div>
+      <button class="price-btn" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Join Waitlist</button>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:32px; font-family:var(--sans); font-size:13px; color:var(--muted);">
+    Early waitlist members get Pro access at Basic pricing ($199). Limited to first 100 users.
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist-section" id="waitlist">
+  <div class="waitlist-left fade-in">
+    <h2>Get early access.<br>Before we launch,<br><em>and before they do.</em></h2>
+    <p style="margin-top:20px;">FSBO.com just raised funding. Competitors are moving fast. The homeowners who win will be the ones who get a real system first — not another listing tool.</p>
+    <div style="margin-top:36px; display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; align-items:center; gap:12px; font-family:var(--sans); font-size:14px; color:rgba(255,255,255,0.75);">
+        <span style="color:var(--lime); font-size:18px;">✓</span> First 100 users get Pro at Basic pricing ($199)
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; font-family:var(--sans); font-size:14px; color:rgba(255,255,255,0.75);">
+        <span style="color:var(--lime); font-size:18px;">✓</span> Beta access to all features before public launch
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; font-family:var(--sans); font-size:14px; color:rgba(255,255,255,0.75);">
+        <span style="color:var(--lime); font-size:18px;">✓</span> Direct input on features you want built first
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="waitlist-form fade-in" id="waitlist-form">
+      <div class="wl-row">
+        <div class="wl-group">
+          <label class="wl-label">First Name</label>
+          <input class="wl-input" type="text" id="wl-fname" placeholder="Robert">
+        </div>
+        <div class="wl-group">
+          <label class="wl-label">Last Name</label>
+          <input class="wl-input" type="text" id="wl-lname" placeholder="Levine">
+        </div>
+      </div>
+      <div class="wl-group">
+        <label class="wl-label">Email Address</label>
+        <input class="wl-input" type="email" id="wl-email" placeholder="robert@email.com">
+      </div>
+      <div class="wl-row">
+        <div class="wl-group">
+          <label class="wl-label">Home State</label>
+          <select class="wl-select" id="wl-state">
+            <option value="">Select state...</option>
+            <option>Utah</option><option>Florida</option><option>Texas</option>
+            <option>Arizona</option><option>Colorado</option><option>Nevada</option>
+            <option>California</option><option>Georgia</option><option>North Carolina</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="wl-group">
+          <label class="wl-label">Target Sale Date</label>
+          <select class="wl-select" id="wl-timeline">
+            <option value="">When planning to sell?</option>
+            <option>Within 3 months</option>
+            <option>3–6 months</option>
+            <option>6–12 months</option>
+            <option>Just exploring</option>
+          </select>
+        </div>
+      </div>
+      <div class="wl-group">
+        <label class="wl-label">Estimated Home Value</label>
+        <select class="wl-select" id="wl-value">
+          <option value="">Select range...</option>
+          <option>Under $300K</option>
+          <option>$300K – $500K</option>
+          <option>$500K – $750K</option>
+          <option>$750K – $1M</option>
+          <option>$1M+</option>
+        </select>
+      </div>
+      <button class="wl-submit" onclick="submitWaitlist()">
+        Reserve My Spot — It's Free →
+      </button>
+      <div class="wl-fine">No spam. No credit card. Just early access.</div>
+    </div>
+    <div class="wl-success" id="wl-success">
+      <h3>You're on the list. 🌿</h3>
+      <p>We'll reach out before launch with your early access link and pricing. In the meantime, tell a friend — if they sign up and mention you, you both get 30 days of Pro free.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">D<em>EED</em></div>
+    <div style="font-family:var(--sans); font-size:12px; color:#444; margin-top:6px;">Built by Loam Strategy · AI-accelerated, human-led</div>
+  </div>
+  <div class="footer-right">
+    DEED is not a law firm or brokerage.<br>
+    Always consult a licensed real estate attorney before signing legal documents.<br>
+    © 2026 DEED / Loam Strategy. All rights reserved.
+  </div>
+</footer>
+
+<script>
+// ─── CURSOR ───
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('button, a, input, select').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('large'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('large'));
+});
+
+// ─── SAVINGS CALCULATOR ───
+function updateCalc(val) {
+  const price = parseInt(val);
+  const pct = (price - 100000) / (2000000 - 100000) * 100;
+  document.getElementById('range-fill').style.width = pct + '%';
+  document.getElementById('calc-price').textContent = '$' + price.toLocaleString();
+  const comm = Math.round(price * 0.03);
+  const savings = comm - 299;
+  document.getElementById('commission').textContent = '-$' + comm.toLocaleString();
+  document.getElementById('savings').textContent = '$' + savings.toLocaleString();
+  document.getElementById('savings-cta').textContent = '$' + savings.toLocaleString();
+}
+
+// ─── SCROLL ANIMATIONS ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Init calc widget as visible
+setTimeout(() => {
+  document.getElementById('calc-widget').classList.add('visible');
+}, 300);
+
+// ─── WAITLIST SUBMIT ───
+function submitWaitlist() {
+  const fname = document.getElementById('wl-fname').value.trim();
+  const email = document.getElementById('wl-email').value.trim();
+
+  if (!fname || !email) {
+    alert('Please enter your name and email to join the waitlist.');
+    return;
+  }
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // In production: POST to your API / Resend / Mailchimp / Supabase
+  console.log('Waitlist signup:', {
+    name: fname + ' ' + document.getElementById('wl-lname').value,
+    email,
+    state: document.getElementById('wl-state').value,
+    timeline: document.getElementById('wl-timeline').value,
+    homeValue: document.getElementById('wl-value').value
+  });
+
+  document.getElementById('waitlist-form').style.display = 'none';
+  document.getElementById('wl-success').style.display = 'block';
+}
+
+// ─── SMOOTH SCROLL FOR NAV ───
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.log
+
+# Node / package managers (in case tooling is added later)
+node_modules/
+dist/
+build/
+.parcel-cache/
+.turbo/
+
+# Python virtualenvs (if used for simple servers or tooling)
+.venv/
+venv/
+

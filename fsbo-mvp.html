@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnClose — Sell Your Home. Keep Your 3%.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A08;
+    --surface: #141412;
+    --surface2: #1C1C19;
+    --border: #2A2A26;
+    --accent: #C8F060;
+    --accent-dim: rgba(200,240,96,0.12);
+    --accent-mid: rgba(200,240,96,0.25);
+    --white: #F2F2EC;
+    --muted: #7A7A72;
+    --danger: #FF6B5B;
+    --sans: 'Syne', sans-serif;
+    --serif: 'Lora', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    cursor: default;
+  }
+
+  /* ---- SCROLLBAR ---- */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ---- NAV ---- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(10,10,8,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--sans); font-weight: 800; font-size: 20px;
+    letter-spacing: -0.02em; color: var(--white);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.06em; color: var(--muted); text-decoration: none;
+    transition: color 0.2s; cursor: pointer;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--white); }
+  .nav-cta {
+    background: var(--accent); color: var(--bg);
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.06em; padding: 10px 22px; border: none; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ---- SCREENS ---- */
+  .screen { display: none; padding-top: 64px; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* ---- HERO ---- */
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 80px 48px;
+    gap: 80px;
+  }
+  .hero-eyebrow {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: var(--sans); font-size: clamp(48px, 5vw, 80px);
+    font-weight: 800; line-height: 1.0; letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub {
+    font-size: 18px; color: #AAAAAA; line-height: 1.75; max-width: 480px;
+    margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 16px; align-items: center; }
+  .btn-primary {
+    background: var(--accent); color: var(--bg);
+    font-family: var(--sans); font-size: 14px; font-weight: 700;
+    letter-spacing: 0.05em; padding: 14px 32px; border: none; cursor: pointer;
+    transition: opacity 0.2s; text-transform: uppercase;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    font-family: var(--sans); font-size: 14px; font-weight: 600;
+    letter-spacing: 0.05em; padding: 13px 28px;
+    border: 1px solid var(--border); cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); }
+
+  .hero-right { position: relative; }
+
+  /* savings widget */
+  .savings-widget {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 36px; position: relative;
+  }
+  .savings-widget::before {
+    content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+  }
+  .widget-label {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .widget-price {
+    font-family: var(--sans); font-size: 52px; font-weight: 800;
+    letter-spacing: -0.03em; margin-bottom: 6px;
+  }
+  .slider-track {
+    width: 100%; height: 3px; background: var(--border);
+    position: relative; margin: 16px 0 28px; cursor: pointer;
+  }
+  .slider-fill {
+    height: 100%; background: var(--accent);
+    position: absolute; top: 0; left: 0;
+    transition: width 0.1s;
+  }
+  input[type=range] {
+    position: absolute; top: -8px; left: 0; width: 100%; height: 20px;
+    opacity: 0; cursor: pointer; margin: 0;
+  }
+  .savings-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+    padding-top: 20px; border-top: 1px solid var(--border);
+  }
+  .s-cell .s-label {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .s-cell .s-val {
+    font-family: var(--sans); font-size: 26px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .trust-row {
+    display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap;
+  }
+  .trust-pill {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    color: var(--muted); display: flex; align-items: center; gap: 6px;
+  }
+  .trust-dot { width: 6px; height: 6px; background: var(--accent); }
+
+  /* ---- SECTION HEADER ---- */
+  .section-header {
+    padding: 80px 48px 48px;
+    border-top: 1px solid var(--border);
+  }
+  .section-eyebrow {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--sans); font-size: clamp(32px, 3vw, 48px);
+    font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;
+    max-width: 600px;
+  }
+  .section-sub {
+    font-size: 17px; color: #AAAAAA; max-width: 500px;
+    margin-top: 16px; line-height: 1.7;
+  }
+
+  /* ---- HOW IT WORKS ---- */
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    margin: 0 48px; border: 1px solid var(--border);
+  }
+  .step-card {
+    background: var(--surface); padding: 36px 32px;
+    transition: background 0.2s;
+  }
+  .step-card:hover { background: var(--surface2); }
+  .step-num {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; color: var(--accent); margin-bottom: 20px;
+  }
+  .step-icon {
+    width: 44px; height: 44px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-dim); border: 1px solid var(--accent-mid);
+    font-size: 20px;
+  }
+  .step-card h3 {
+    font-family: var(--sans); font-size: 20px; font-weight: 700;
+    margin-bottom: 12px; letter-spacing: -0.01em;
+  }
+  .step-card p { font-size: 15px; color: #AAAAAA; line-height: 1.65; }
+
+  /* ---- FEATURES ---- */
+  .features-layout {
+    display: grid; grid-template-columns: 300px 1fr;
+    gap: 0; margin: 0 48px;
+    border: 1px solid var(--border);
+  }
+  .feature-nav { border-right: 1px solid var(--border); }
+  .feature-nav-item {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .feature-nav-item:last-child { border-bottom: none; }
+  .feature-nav-item:hover { background: var(--surface2); }
+  .feature-nav-item.active {
+    background: var(--surface2);
+    border-right: 2px solid var(--accent);
+  }
+  .fni-label {
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .fni-tag {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; padding: 3px 8px;
+    background: var(--accent-dim); color: var(--accent);
+  }
+  .feature-detail { padding: 40px 48px; }
+  .feature-detail h3 {
+    font-family: var(--sans); font-size: 28px; font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 12px;
+  }
+  .feature-detail .detail-sub {
+    font-size: 16px; color: #AAAAAA; line-height: 1.7; margin-bottom: 32px;
+    max-width: 520px;
+  }
+  .output-list { display: flex; flex-direction: column; gap: 0; }
+  .output-item {
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px 0;
+    border-bottom: 1px solid var(--border); font-size: 15px;
+  }
+  .output-item:last-child { border-bottom: none; }
+  .output-check {
+    width: 20px; height: 20px; flex-shrink: 0;
+    background: var(--accent-dim); border: 1px solid var(--accent-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--accent); margin-top: 1px;
+  }
+  .tone-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .tone-chip {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    padding: 6px 14px; border: 1px solid var(--border);
+    letter-spacing: 0.04em; cursor: pointer;
+    transition: all 0.15s; color: var(--muted);
+  }
+  .tone-chip:hover, .tone-chip.active {
+    border-color: var(--accent); color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  /* ---- DASHBOARD PREVIEW ---- */
+  .dashboard-wrap {
+    margin: 0 48px 80px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .dash-topbar {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 16px 24px; display: flex; align-items: center;
+    justify-content: space-between;
+  }
+  .dash-title {
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .dash-user {
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    color: var(--white); display: flex; align-items: center; gap: 8px;
+  }
+  .dash-avatar {
+    width: 28px; height: 28px; background: var(--accent-mid);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; color: var(--accent);
+    font-family: var(--sans); font-weight: 700;
+  }
+  .dash-body {
+    display: grid; grid-template-columns: 220px 1fr;
+    min-height: 520px;
+  }
+  .dash-sidebar {
+    background: var(--surface2); border-right: 1px solid var(--border);
+    padding: 24px 16px;
+  }
+  .dash-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; font-family: var(--sans); font-size: 13px;
+    font-weight: 600; color: var(--muted); cursor: pointer;
+    transition: all 0.15s; margin-bottom: 4px;
+    letter-spacing: 0.03em;
+  }
+  .dash-nav-item:hover { color: var(--white); }
+  .dash-nav-item.active { color: var(--accent); background: var(--accent-dim); }
+  .dash-nav-icon { width: 16px; text-align: center; font-size: 14px; }
+  .dash-main { padding: 28px 32px; background: var(--bg); }
+
+  /* Metric Cards */
+  .metric-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .metric-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
+  .metric-card.highlight { border-top: 2px solid var(--accent); }
+  .metric-label {
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .metric-val {
+    font-family: var(--sans); font-size: 28px; font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .metric-sub { font-family: var(--sans); font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Timeline */
+  .timeline-section { margin-bottom: 24px; }
+  .timeline-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .timeline-title {
+    font-family: var(--sans); font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+  }
+  .timeline-phases { display: flex; gap: 8px; }
+  .tphase {
+    flex: 1; padding: 12px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;
+    position: relative;
+  }
+  .tphase.done { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .tphase.current {
+    border-color: var(--accent); color: var(--bg);
+    background: var(--accent);
+  }
+  .tphase.current .tphase-label { color: var(--bg); }
+  .tphase-label { font-size: 10px; margin-bottom: 2px; }
+  .tphase-name { font-size: 11px; }
+
+  /* Task list */
+  .task-list { display: flex; flex-direction: column; gap: 6px; }
+  .task-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .task-check {
+    width: 18px; height: 18px; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 10px;
+  }
+  .task-check.done { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .task-item.done .task-label { color: var(--muted); text-decoration: line-through; }
+  .task-due { margin-left: auto; font-size: 11px; color: var(--muted); font-weight: 400; }
+  .task-due.urgent { color: #FF9A3C; }
+
+  /* ---- PRICING ---- */
+  .pricing-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; margin: 0 48px 80px;
+  }
+  .price-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 36px 32px; position: relative;
+    transition: border-color 0.2s;
+  }
+  .price-card:hover { border-color: var(--border); }
+  .price-card.featured {
+    border-color: var(--accent); background: var(--surface2);
+  }
+  .price-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: var(--bg);
+    font-family: var(--sans); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; padding: 4px 16px;
+  }
+  .price-tier {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; color: var(--muted); margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .price-amount {
+    font-family: var(--sans); font-size: 52px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px;
+  }
+  .price-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+  .price-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+  .price-feature {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; padding: 8px 0; color: #CCCCCC;
+  }
+  .price-feature .pf-icon { color: var(--accent); flex-shrink: 0; font-size: 13px; margin-top: 2px; }
+  .price-feature.dim { color: var(--muted); }
+  .price-feature.dim .pf-icon { color: var(--border); }
+  .price-btn {
+    width: 100%; margin-top: 28px; padding: 14px;
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+    transition: all 0.2s; border: none;
+  }
+  .price-btn.secondary {
+    background: transparent; color: var(--white); border: 1px solid var(--border);
+  }
+  .price-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .price-btn.primary-btn { background: var(--accent); color: var(--bg); }
+  .price-btn.primary-btn:hover { opacity: 0.85; }
+
+  /* ---- ONBOARDING SCREEN ---- */
+  .onboard-wrap {
+    max-width: 640px; margin: 0 auto; padding: 60px 48px;
+  }
+  .onboard-progress {
+    display: flex; gap: 4px; margin-bottom: 48px;
+  }
+  .prog-step {
+    flex: 1; height: 3px; background: var(--border);
+  }
+  .prog-step.done { background: var(--accent); }
+  .prog-step.active { background: var(--accent); opacity: 0.5; }
+  .onboard-step { display: none; }
+  .onboard-step.active { display: block; }
+  .onboard-q {
+    font-family: var(--sans); font-size: 28px; font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 8px;
+  }
+  .onboard-hint { font-size: 15px; color: var(--muted); margin-bottom: 32px; }
+  .onboard-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    color: var(--white); font-family: var(--serif); font-size: 16px;
+    padding: 16px 20px; outline: none; transition: border-color 0.2s;
+  }
+  .onboard-input:focus { border-color: var(--accent); }
+  .onboard-options { display: flex; flex-direction: column; gap: 10px; }
+  .onboard-option {
+    padding: 16px 20px; background: var(--surface); border: 1px solid var(--border);
+    font-family: var(--sans); font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; display: flex; align-items: center; gap: 14px;
+    letter-spacing: 0.02em;
+  }
+  .onboard-option:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .onboard-option.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .onboard-option .opt-radio {
+    width: 18px; height: 18px; border: 1.5px solid var(--border);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .onboard-option.selected .opt-radio { border-color: var(--accent); background: var(--accent); }
+  .onboard-option.selected .opt-radio::after {
+    content: '✓'; font-size: 11px; color: var(--bg); font-weight: 700;
+  }
+  .onboard-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 40px;
+  }
+  .onboard-back {
+    background: transparent; border: none; color: var(--muted);
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    cursor: pointer; letter-spacing: 0.06em; padding: 0;
+  }
+  .onboard-next {
+    background: var(--accent); color: var(--bg);
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 28px;
+    border: none; cursor: pointer;
+  }
+  .step-counter {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* ---- LISTING BUILDER ---- */
+  .listing-wrap { padding: 0 48px 80px; }
+  .listing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .listing-panel { background: var(--surface); border: 1px solid var(--border); }
+  .panel-header {
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-title {
+    font-family: var(--sans); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase;
+  }
+  .panel-body { padding: 24px; }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase;
+    display: block; margin-bottom: 8px;
+  }
+  .form-field {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--white); font-family: var(--serif); font-size: 15px;
+    padding: 12px 16px; outline: none; resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .form-field:focus { border-color: var(--accent); }
+  .generate-btn {
+    width: 100%; background: var(--accent); color: var(--bg);
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 14px;
+    border: none; cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
+  }
+  .generate-btn:hover { opacity: 0.85; }
+  .output-text {
+    font-size: 15px; line-height: 1.75; color: #DDDDDD;
+    white-space: pre-line;
+  }
+  .copy-btn {
+    font-family: var(--sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--muted); background: transparent;
+    border: 1px solid var(--border); padding: 6px 14px; cursor: pointer;
+    text-transform: uppercase; transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tone-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---- FOOTER ---- */
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: var(--sans); font-weight: 800; font-size: 16px; }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-family: var(--sans); font-size: 12px; color: var(--muted); }
+
+  /* ---- ANIMATIONS ---- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .screen.active > * { animation: fadeUp 0.4s ease forwards; }
+  .screen.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .screen.active > *:nth-child(3) { animation-delay: 0.1s; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px; }
+    .steps-grid { grid-template-columns: 1fr; margin: 0 24px; }
+    .features-layout { grid-template-columns: 1fr; margin: 0 24px; }
+    .feature-nav { border-right: none; border-bottom: 1px solid var(--border); }
+    .pricing-grid { grid-template-columns: 1fr; margin: 0 24px; }
+    .listing-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .metric-row { grid-template-columns: 1fr 1fr; }
+    .listing-wrap { padding: 0 24px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Own<span>Close</span></div>
+  <div class="nav-links">
+    <a onclick="showScreen('home')" class="active" id="nav-home">Home</a>
+    <a onclick="showScreen('onboard')" id="nav-onboard">Get Started</a>
+    <a onclick="showScreen('dashboard')" id="nav-dashboard">Dashboard</a>
+    <a onclick="showScreen('listing')" id="nav-listing">Listing Builder</a>
+    <a onclick="showScreen('pricing')" id="nav-pricing">Pricing</a>
+  </div>
+  <button class="nav-cta" onclick="showScreen('onboard')">Start Free →</button>
+</nav>
+
+<!-- ======== HOME SCREEN ======== -->
+<div class="screen active" id="screen-home">
+
+  <section class="hero">
+    <div>
+      <div class="hero-eyebrow">AI-Powered FSBO Platform</div>
+      <h1>Sell Your Home.<br><em>Keep Your 3%.</em></h1>
+      <p class="hero-sub">The complete AI selling system for confident homeowners. Professional-grade process, every step — without the commission.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showScreen('onboard')">Build My Roadmap →</button>
+        <button class="btn-ghost" onclick="showScreen('dashboard')">See Demo</button>
+      </div>
+      <div class="trust-row">
+        <div class="trust-pill"><span class="trust-dot"></span>Avg. savings: $18,400</div>
+        <div class="trust-pill"><span class="trust-dot"></span>Avg. sale: 11 days</div>
+        <div class="trust-pill"><span class="trust-dot"></span>No realtor needed</div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="savings-widget">
+        <div class="widget-label">Your Home's Sale Price</div>
+        <div class="widget-price" id="hero-price">$450,000</div>
+        <div class="slider-track" style="position:relative;">
+          <div class="slider-fill" id="slider-fill" style="width:30%;"></div>
+          <input type="range" min="150000" max="2000000" step="10000" value="450000" oninput="updateCalc(this.value)">
+        </div>
+        <div class="savings-row">
+          <div class="s-cell">
+            <div class="s-label">Agent Cuts</div>
+            <div class="s-val" id="commission" style="color:#FF6B5B;">-$13,500</div>
+          </div>
+          <div class="s-cell">
+            <div class="s-label">App Cost</div>
+            <div class="s-val">$299</div>
+          </div>
+          <div class="s-cell">
+            <div class="s-label">You Keep</div>
+            <div class="s-val" id="savings" style="color:var(--accent);">$13,201</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div class="section-header">
+    <div class="section-eyebrow">How It Works</div>
+    <div class="section-title">Not a listing tool.<br>A selling system.</div>
+    <div class="section-sub">Robert sold his home in 5 days with 5 offers using AI. We built the system around exactly how he did it.</div>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">🗺️</div>
+      <h3>Onboard & Roadmap</h3>
+      <p>Answer 8 questions. Get a complete, personalized sale roadmap with a week-by-week timeline from prep to closing.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">💡</div>
+      <h3>Prep & Price Smart</h3>
+      <p>AI ranks your improvement options by ROI and helps you price precisely — so you maximize what you take home.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">📋</div>
+      <h3>List Like a Pro</h3>
+      <p>AI-generated MLS copy, Zillow listing, open house materials, and step-by-step flat-fee MLS guidance.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-icon">📆</div>
+      <h3>Manage Showings</h3>
+      <p>Track every showing, collect feedback, and know exactly when and how to follow up to move buyers toward offers.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">05</div>
+      <div class="step-icon">⚖️</div>
+      <h3>Compare & Negotiate</h3>
+      <p>When offers come in, compare them side-by-side. See which is truly strongest — not just the biggest number.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">06</div>
+      <div class="step-icon">📝</div>
+      <h3>Contract & Close</h3>
+      <p>State-specific contract templates auto-filled with your deal terms. Connect to a flat-fee attorney for the final 10%.</p>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section-header" style="padding-bottom: 24px;">
+    <div class="section-eyebrow">Feature Modules</div>
+    <div class="section-title">Every tool you need.<br>Nothing you don't.</div>
+  </div>
+  <div class="features-layout">
+    <div class="feature-nav">
+      <div class="feature-nav-item active" onclick="showFeature(0, this)">
+        <span class="fni-label">Timeline Engine</span>
+        <span class="fni-tag">CORE</span>
+      </div>
+      <div class="feature-nav-item" onclick="showFeature(1, this)">
+        <span class="fni-label">ROI Advisor</span>
+        <span class="fni-tag">CORE</span>
+      </div>
+      <div class="feature-nav-item" onclick="showFeature(2, this)">
+        <span class="fni-label">Listing Builder</span>
+        <span class="fni-tag">CORE</span>
+      </div>
+      <div class="feature-nav-item" onclick="showFeature(3, this)">
+        <span class="fni-label">MLS Guidance</span>
+        <span class="fni-tag">CORE</span>
+      </div>
+      <div class="feature-nav-item" onclick="showFeature(4, this)">
+        <span class="fni-label">Offer Comparison</span>
+        <span class="fni-tag">PRO</span>
+      </div>
+      <div class="feature-nav-item" onclick="showFeature(5, this)">
+        <span class="fni-label">Contract Generator</span>
+        <span class="fni-tag">PRO</span>
+      </div>
+      <div class="feature-nav-item" onclick="showFeature(6, this)">
+        <span class="fni-label">Savings Calculator</span>
+        <span class="fni-tag">FREE</span>
+      </div>
+    </div>
+    <div class="feature-detail" id="feature-detail">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Own<span>Close</span></div>
+    <div class="footer-copy">© 2026 OwnClose · Built by Loam Strategy · Not legal advice. Always consult an attorney.</div>
+  </footer>
+</div>
+
+<!-- ======== ONBOARDING SCREEN ======== -->
+<div class="screen" id="screen-onboard">
+  <div class="onboard-wrap">
+    <div class="step-counter" id="step-counter">Step 1 of 6</div>
+    <div class="onboard-progress" id="onboard-progress">
+      <div class="prog-step active"></div>
+      <div class="prog-step"></div>
+      <div class="prog-step"></div>
+      <div class="prog-step"></div>
+      <div class="prog-step"></div>
+      <div class="prog-step"></div>
+    </div>
+
+    <div class="onboard-step active" id="step-1">
+      <div class="onboard-q">What's the address of the home you're selling?</div>
+      <div class="onboard-hint">We'll use this to pull market data and customize your roadmap.</div>
+      <input class="onboard-input" type="text" placeholder="123 Main Street, Miami, FL 33101">
+    </div>
+
+    <div class="onboard-step" id="step-2">
+      <div class="onboard-q">What's your target move-out date?</div>
+      <div class="onboard-hint">This anchors your entire timeline. Don't worry — we'll give you buffer.</div>
+      <input class="onboard-input" type="text" placeholder="e.g. August 1, 2026">
+    </div>
+
+    <div class="onboard-step" id="step-3">
+      <div class="onboard-q">What's your primary reason for selling?</div>
+      <div class="onboard-hint">This helps us prioritize what matters most in your sale strategy.</div>
+      <div class="onboard-options">
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Relocating for work
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Downsizing
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Upsizing / Growing family
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Financial reasons
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Investment / rental property
+        </div>
+      </div>
+    </div>
+
+    <div class="onboard-step" id="step-4">
+      <div class="onboard-q">How would you describe your home's current condition?</div>
+      <div class="onboard-hint">Be honest — this helps us give you the most accurate ROI advice.</div>
+      <div class="onboard-options">
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Move-in ready. Minimal updates needed.
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Good shape. A few cosmetic updates would help.
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Needs moderate updates. Dated but functional.
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Fixer-upper. Significant work needed.
+        </div>
+      </div>
+    </div>
+
+    <div class="onboard-step" id="step-5">
+      <div class="onboard-q">What's your budget for pre-sale improvements?</div>
+      <div class="onboard-hint">Even $500 in the right place can dramatically change your sale price.</div>
+      <div class="onboard-options">
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> $0 — selling as-is
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> Under $2,000
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> $2,000 – $10,000
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> $10,000 – $30,000
+        </div>
+        <div class="onboard-option" onclick="selectOption(this)">
+          <div class="opt-radio"></div> $30,000+
+        </div>
+      </div>
+    </div>
+
+    <div class="onboard-step" id="step-6">
+      <div class="onboard-q">Your personalized roadmap is ready.</div>
+      <div class="onboard-hint" style="margin-bottom: 28px;">Based on your answers, here's what we've built for you:</div>
+      <div style="background: var(--surface); border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; border-top: 2px solid var(--accent);">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+          <div>
+            <div class="metric-label" style="margin-bottom:4px;">Est. Market Range</div>
+            <div style="font-family: var(--sans); font-size: 24px; font-weight: 800;">$440K – $465K</div>
+          </div>
+          <div>
+            <div class="metric-label" style="margin-bottom:4px;">Est. Net Savings</div>
+            <div style="font-family: var(--sans); font-size: 24px; font-weight: 800; color: var(--accent);">$13,201</div>
+          </div>
+        </div>
+        <div class="metric-label" style="margin-bottom: 12px;">Your Sale Timeline</div>
+        <div style="display: flex; gap: 4px;">
+          <div style="flex:1; background: var(--accent-dim); border: 1px solid var(--accent-mid); padding: 8px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;">Prep<br><span style="color: var(--muted); font-weight: 400;">Wks 1–2</span></div>
+          <div style="flex:1; background: var(--surface2); border: 1px solid var(--border); padding: 8px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase;">Price<br><span style="font-weight: 400;">Wk 3</span></div>
+          <div style="flex:1; background: var(--surface2); border: 1px solid var(--border); padding: 8px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase;">Market<br><span style="font-weight: 400;">Wk 4</span></div>
+          <div style="flex:1; background: var(--surface2); border: 1px solid var(--border); padding: 8px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase;">List<br><span style="font-weight: 400;">Wk 5</span></div>
+          <div style="flex:1; background: var(--surface2); border: 1px solid var(--border); padding: 8px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase;">Close<br><span style="font-weight: 400;">Wk 6+</span></div>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%; padding: 16px;" onclick="showScreen('dashboard')">Enter Your Dashboard →</button>
+    </div>
+
+    <div class="onboard-nav">
+      <button class="onboard-back" id="back-btn" onclick="prevStep()" style="visibility:hidden;">← Back</button>
+      <button class="onboard-next" id="next-btn" onclick="nextStep()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== DASHBOARD SCREEN ======== -->
+<div class="screen" id="screen-dashboard">
+  <div class="section-header" style="padding-bottom: 24px; border-top: none;">
+    <div class="section-eyebrow">Your Sale Dashboard</div>
+    <div class="section-title" style="font-size: 32px;">123 Main Street, Miami FL</div>
+  </div>
+  <div class="dashboard-wrap">
+    <div class="dash-topbar">
+      <div class="dash-title">Sale Status: Active — Week 2 of 6</div>
+      <div class="dash-user">
+        <div class="dash-avatar">RL</div>
+        Robert L.
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-sidebar">
+        <div class="dash-nav-item active" onclick="switchDashTab('overview', this)">
+          <span class="dash-nav-icon">⬛</span> Overview
+        </div>
+        <div class="dash-nav-item" onclick="switchDashTab('timeline', this)">
+          <span class="dash-nav-icon">📅</span> Timeline
+        </div>
+        <div class="dash-nav-item" onclick="switchDashTab('roi', this)">
+          <span class="dash-nav-icon">💡</span> ROI Advisor
+        </div>
+        <div class="dash-nav-item" onclick="showScreen('listing')">
+          <span class="dash-nav-icon">✍️</span> Listing Builder
+        </div>
+        <div class="dash-nav-item" onclick="switchDashTab('showings', this)">
+          <span class="dash-nav-icon">🏠</span> Showings
+        </div>
+        <div class="dash-nav-item" onclick="switchDashTab('offers', this)">
+          <span class="dash-nav-icon">📊</span> Offers
+        </div>
+        <div class="dash-nav-item" onclick="switchDashTab('contract', this)">
+          <span class="dash-nav-icon">📝</span> Contract
+        </div>
+      </div>
+      <div class="dash-main" id="dash-main">
+        <!-- Overview tab (default) -->
+        <div id="tab-overview">
+          <div class="metric-row">
+            <div class="metric-card highlight">
+              <div class="metric-label">Est. Sale Price</div>
+              <div class="metric-val">$452K</div>
+              <div class="metric-sub">↑ +$7K vs. initial estimate</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Days Active</div>
+              <div class="metric-val">0</div>
+              <div class="metric-sub">Not yet listed</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Tasks Complete</div>
+              <div class="metric-val">4/7</div>
+              <div class="metric-sub">Week 2 — On track</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Est. Savings</div>
+              <div class="metric-val" style="color: var(--accent);">$13.2K</div>
+              <div class="metric-sub">vs. 3% commission</div>
+            </div>
+          </div>
+
+          <div class="timeline-section">
+            <div class="timeline-header">
+              <div class="timeline-title" style="font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;">Sale Phases</div>
+            </div>
+            <div class="timeline-phases">
+              <div class="tphase done"><div class="tphase-label">01</div><div class="tphase-name">Onboard</div></div>
+              <div class="tphase current"><div class="tphase-label">02</div><div class="tphase-name">Prep</div></div>
+              <div class="tphase"><div class="tphase-label">03</div><div class="tphase-name">Price</div></div>
+              <div class="tphase"><div class="tphase-label">04</div><div class="tphase-name">Market</div></div>
+              <div class="tphase"><div class="tphase-label">05</div><div class="tphase-name">Offers</div></div>
+              <div class="tphase"><div class="tphase-label">06</div><div class="tphase-name">Close</div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="timeline-header">
+              <div class="timeline-title" style="font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase;">This Week's Tasks</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--accent);">4 of 7 complete</div>
+            </div>
+            <div class="task-list">
+              <div class="task-item done">
+                <div class="task-check done">✓</div>
+                <span class="task-label">Repaint living room (highest ROI per AI advisor)</span>
+                <span class="task-due">Done</span>
+              </div>
+              <div class="task-item done">
+                <div class="task-check done">✓</div>
+                <span class="task-label">Deep clean & declutter all rooms</span>
+                <span class="task-due">Done</span>
+              </div>
+              <div class="task-item done">
+                <div class="task-check done">✓</div>
+                <span class="task-label">Fix leaky faucet in master bath</span>
+                <span class="task-due">Done</span>
+              </div>
+              <div class="task-item done">
+                <div class="task-check done">✓</div>
+                <span class="task-label">Schedule professional photography</span>
+                <span class="task-due">Done</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <span class="task-label">Complete listing copy in Listing Builder</span>
+                <span class="task-due urgent">Due today</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <span class="task-label">Submit flat-fee MLS application</span>
+                <span class="task-due">Due Thu</span>
+              </div>
+              <div class="task-item">
+                <div class="task-check"></div>
+                <span class="task-label">Set listing date (AI recommends Tuesday)</span>
+                <span class="task-due">Due Fri</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-roi" style="display:none;">
+          <div class="timeline-header">
+            <div class="timeline-title" style="font-family: var(--sans); font-size: 16px; font-weight: 800; color: var(--white); letter-spacing: -0.01em;">ROI Improvement Advisor</div>
+            <div style="font-family: var(--sans); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;">Budget: $2,000–$10,000</div>
+          </div>
+          <div class="task-list">
+            <div class="task-item" style="background: var(--accent-dim); border-color: var(--accent);">
+              <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent); color: var(--bg); padding: 2px 8px; flex-shrink:0;">#1</div>
+              <div>
+                <div style="font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--white);">Repaint living room & entry</div>
+                <div style="font-family: var(--sans); font-size: 11px; color: var(--muted);">Cost: ~$400 · Est. value add: $2,800</div>
+              </div>
+              <span class="task-due" style="color: var(--accent);">ROI: 7x</span>
+            </div>
+            <div class="task-item">
+              <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; background: var(--surface2); color: var(--muted); padding: 2px 8px; flex-shrink:0;">#2</div>
+              <div>
+                <div style="font-family: var(--sans); font-size: 13px; font-weight: 700;">Update kitchen hardware & fixtures</div>
+                <div style="font-family: var(--sans); font-size: 11px; color: var(--muted);">Cost: ~$600 · Est. value add: $3,000</div>
+              </div>
+              <span class="task-due" style="color: var(--accent);">ROI: 5x</span>
+            </div>
+            <div class="task-item">
+              <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; background: var(--surface2); color: var(--muted); padding: 2px 8px; flex-shrink:0;">#3</div>
+              <div>
+                <div style="font-family: var(--sans); font-size: 13px; font-weight: 700;">Professional staging (living & master)</div>
+                <div style="font-family: var(--sans); font-size: 11px; color: var(--muted);">Cost: ~$1,200 · Est. value add: $4,800</div>
+              </div>
+              <span class="task-due" style="color: var(--accent);">ROI: 4x</span>
+            </div>
+            <div class="task-item" style="opacity: 0.5;">
+              <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; background: #1a1a1a; color: var(--muted); padding: 2px 8px; flex-shrink:0; border: 1px solid #333;">SKIP</div>
+              <div>
+                <div style="font-family: var(--sans); font-size: 13px; font-weight: 700; text-decoration: line-through;">Replace kitchen countertops</div>
+                <div style="font-family: var(--sans); font-size: 11px; color: var(--muted);">Cost: ~$6,000 · Below market ROI threshold</div>
+              </div>
+              <span class="task-due" style="color: var(--danger);">ROI: 0.8x</span>
+            </div>
+            <div class="task-item" style="opacity: 0.5;">
+              <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; background: #1a1a1a; color: var(--muted); padding: 2px 8px; flex-shrink:0; border: 1px solid #333;">SKIP</div>
+              <div>
+                <div style="font-family: var(--sans); font-size: 13px; font-weight: 700; text-decoration: line-through;">Add pool enclosure</div>
+                <div style="font-family: var(--sans); font-size: 11px; color: var(--muted);">Cost: ~$15,000 · Exceeds neighborhood price ceiling</div>
+              </div>
+              <span class="task-due" style="color: var(--danger);">ROI: 0.3x</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-offers" style="display:none;">
+          <div class="timeline-header">
+            <div class="timeline-title" style="font-family: var(--sans); font-size: 16px; font-weight: 800; color: var(--white); letter-spacing: -0.01em;">Offer Comparison</div>
+            <div style="font-family: var(--sans); font-size: 11px; color: var(--muted);">3 offers received</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+            <div style="background: var(--accent-dim); border: 1px solid var(--accent); padding: 20px;">
+              <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 6px;">STRONGEST OFFER</div>
+              <div style="font-family: var(--sans); font-size: 32px; font-weight: 800; letter-spacing: -0.02em;">$458K</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--muted); margin-top: 8px;">Conventional · 20% down</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--muted);">30-day close · No inspection</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--accent); margin-top: 8px; font-weight: 700;">Net: $457,701</div>
+            </div>
+            <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px;">
+              <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 6px;">OFFER 2</div>
+              <div style="font-family: var(--sans); font-size: 32px; font-weight: 800; letter-spacing: -0.02em;">$461K</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--muted); margin-top: 8px;">FHA · 3.5% down</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--muted);">45-day close · Inspection req.</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: #FF9A3C; margin-top: 8px; font-weight: 700;">Net: $453,200 ⚠</div>
+            </div>
+            <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px;">
+              <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 6px;">OFFER 3</div>
+              <div style="font-family: var(--sans); font-size: 32px; font-weight: 800; letter-spacing: -0.02em;">$445K</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--muted); margin-top: 8px;">Cash · All-cash</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--muted);">14-day close · Waived</div>
+              <div style="font-family: var(--sans); font-size: 12px; color: var(--white); margin-top: 8px; font-weight: 700;">Net: $444,701</div>
+            </div>
+          </div>
+          <div style="background: var(--surface); border: 1px solid var(--border); padding: 20px;">
+            <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 8px; text-transform: uppercase;">AI Recommendation</div>
+            <p style="font-size: 15px; line-height: 1.7; color: #CCCCCC;">Offer #1 ($458K conventional) is your strongest deal. Although Offer #2 has a higher price, the FHA financing, 45-day close, and required inspection introduce meaningful risk of re-negotiation or fall-through. Offer #1's net proceeds are $4,500 higher after accounting for carrying costs and concession probability.</p>
+          </div>
+        </div>
+
+        <div id="tab-showings" style="display:none;">
+          <div class="timeline-header">
+            <div class="timeline-title" style="font-family: var(--sans); font-size: 16px; font-weight: 800; color: var(--white);">Showing Tracker</div>
+          </div>
+          <div class="task-list">
+            <div class="task-item" style="display:grid; grid-template-columns: 120px 1fr 80px 80px;">
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--muted);">DATE</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--muted);">BUYER AGENT</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--muted);">FEEDBACK</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--muted);">STATUS</span>
+            </div>
+            <div class="task-item" style="display:grid; grid-template-columns: 120px 1fr 80px 80px;">
+              <span style="font-family: var(--sans); font-size: 13px; font-weight: 600;">Tue Apr 8</span>
+              <span>Sarah M. · Keller Williams</span>
+              <span style="font-family: var(--sans); font-size: 12px; color: var(--accent);">⭐⭐⭐⭐⭐</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--accent);">OFFER</span>
+            </div>
+            <div class="task-item" style="display:grid; grid-template-columns: 120px 1fr 80px 80px;">
+              <span style="font-family: var(--sans); font-size: 13px; font-weight: 600;">Tue Apr 8</span>
+              <span>James R. · RE/MAX</span>
+              <span style="font-family: var(--sans); font-size: 12px; color: var(--accent);">⭐⭐⭐⭐</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: #FF9A3C;">PENDING</span>
+            </div>
+            <div class="task-item" style="display:grid; grid-template-columns: 120px 1fr 80px 80px;">
+              <span style="font-family: var(--sans); font-size: 13px; font-weight: 600;">Wed Apr 9</span>
+              <span>Open House · 10 attendees</span>
+              <span style="font-family: var(--sans); font-size: 12px; color: var(--accent);">⭐⭐⭐⭐</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--accent);">OFFER</span>
+            </div>
+            <div class="task-item" style="display:grid; grid-template-columns: 120px 1fr 80px 80px;">
+              <span style="font-family: var(--sans); font-size: 13px; font-weight: 600;">Thu Apr 10</span>
+              <span>Maria K. · Compass</span>
+              <span style="font-family: var(--sans); font-size: 12px; color: var(--muted);">⭐⭐⭐</span>
+              <span style="font-family: var(--sans); font-size: 11px; font-weight: 700; color: var(--muted);">PASSED</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-contract" style="display:none;">
+          <div class="timeline-header">
+            <div class="timeline-title" style="font-family: var(--sans); font-size: 16px; font-weight: 800; color: var(--white);">Contract Generator</div>
+          </div>
+          <div style="background: var(--surface); border: 1px solid var(--border); padding: 28px; margin-bottom: 16px;">
+            <div style="font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 16px; text-transform: uppercase;">Auto-filled from Offer #1</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px; line-height: 1.8;">
+              <div><span style="color: var(--muted); font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: block;">Property</span>123 Main Street, Miami FL 33101</div>
+              <div><span style="color: var(--muted); font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: block;">Sale Price</span>$458,000</div>
+              <div><span style="color: var(--muted); font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: block;">Financing</span>Conventional · 20% Down</div>
+              <div><span style="color: var(--muted); font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; display: block;">Close Date</span>May 8, 2026</div>
+            </div>
+          </div>
+          <div style="background: #1A1209; border: 1px solid #3D2E0A; padding: 16px 20px; margin-bottom: 16px; display: flex; gap: 12px; align-items: flex-start;">
+            <span style="font-size: 18px;">⚠️</span>
+            <p style="font-family: var(--sans); font-size: 13px; font-weight: 600; color: #FF9A3C; line-height: 1.6;">This AI-generated contract is a starting template only. <strong>Always have a licensed real estate attorney review before signing.</strong> We'll connect you with a flat-fee attorney for a 1-hour review ($149–$299).</p>
+          </div>
+          <button class="btn-primary">Generate Florida Purchase Agreement →</button>
+          <button class="btn-ghost" style="margin-left: 12px;">Find Attorney Near Me</button>
+        </div>
+
+        <div id="tab-timeline" style="display:none;">
+          <div class="timeline-title" style="font-family: var(--sans); font-size: 16px; font-weight: 800; color: var(--white); margin-bottom: 20px;">Full Sale Timeline</div>
+          <div class="task-list">
+            <div class="task-item done"><div class="task-check done">✓</div><span class="task-label" style="font-weight: 700; color: var(--muted);">Week 1 — Complete onboarding & set timeline</span><span class="task-due">Done</span></div>
+            <div class="task-item done"><div class="task-check done">✓</div><span class="task-label" style="font-weight: 700; color: var(--muted);">Week 1 — Run ROI Advisor, start prep work</span><span class="task-due">Done</span></div>
+            <div class="task-item done"><div class="task-check done">✓</div><span class="task-label" style="font-weight: 700; color: var(--muted);">Week 2 — Repaint living room & entry</span><span class="task-due">Done</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 2 — Build listing copy in Listing Builder</span><span class="task-due urgent">Today</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 3 — Submit flat-fee MLS listing</span><span class="task-due">Apr 15</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 3 — Schedule open house (Saturday)</span><span class="task-due">Apr 15</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 4 — Go live on Tuesday (optimal day)</span><span class="task-due">Apr 22</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 4 — Host open house</span><span class="task-due">Apr 26</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 5 — Review & compare offers</span><span class="task-due">Apr 28</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 5 — Generate contract, attorney review</span><span class="task-due">Apr 30</span></div>
+            <div class="task-item"><div class="task-check"></div><span class="task-label">Week 6+ — Closing</span><span class="task-due">May 8</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== LISTING BUILDER SCREEN ======== -->
+<div class="screen" id="screen-listing">
+  <div class="section-header" style="border-top: none;">
+    <div class="section-eyebrow">Listing Builder</div>
+    <div class="section-title" style="font-size: 32px;">Write copy that sells.</div>
+    <div class="section-sub">AI generates MLS-ready listing copy, Zillow descriptions, and open house materials — in the tone that fits your buyer.</div>
+  </div>
+  <div class="listing-wrap">
+    <div style="margin-bottom: 20px;">
+      <div class="form-label" style="margin-bottom: 10px;">Select Buyer Tone</div>
+      <div class="tone-row">
+        <div class="tone-chip active" onclick="selectTone(this)">Family-Focused</div>
+        <div class="tone-chip" onclick="selectTone(this)">Luxury & Refined</div>
+        <div class="tone-chip" onclick="selectTone(this)">Investor Appeal</div>
+        <div class="tone-chip" onclick="selectTone(this)">First-Time Buyer</div>
+        <div class="tone-chip" onclick="selectTone(this)">Move-In Ready</div>
+      </div>
+    </div>
+    <div class="listing-grid">
+      <div class="listing-panel">
+        <div class="panel-header">
+          <div class="panel-title">Home Details</div>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="form-label">Property Type & Size</label>
+            <input class="form-field" value="4BR / 2.5BA · 2,240 sqft · Single family">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Top 5 Highlights</label>
+            <textarea class="form-field" rows="4" placeholder="e.g. Renovated kitchen, pool, cul-de-sac, A-rated schools, 3-car garage...">Pool & outdoor living area, renovated kitchen (2023), vaulted ceilings, A-rated Broward schools, quiet cul-de-sac</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Neighborhood Selling Points</label>
+            <textarea class="form-field" rows="3" placeholder="Parks, restaurants, commute, schools...">5 min to I-595, Whole Foods 3 blocks, Cooper City Regional Park, top-rated elementary within walking distance</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price</label>
+            <input class="form-field" value="$452,000">
+          </div>
+          <button class="generate-btn" onclick="generateListing()">Generate Listing Copy →</button>
+        </div>
+      </div>
+
+      <div class="listing-panel">
+        <div class="panel-header">
+          <div class="panel-title">Generated Listing Copy</div>
+          <button class="copy-btn" onclick="copyListing()">Copy All</button>
+        </div>
+        <div class="panel-body" id="listing-output">
+          <p style="color: var(--muted); font-style: italic; font-size: 15px;">Fill in your home details and click Generate →</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PRICING SCREEN ======== -->
+<div class="screen" id="screen-pricing">
+  <div class="section-header" style="border-top: none;">
+    <div class="section-eyebrow">Simple Pricing</div>
+    <div class="section-title">One flat fee.<br>No surprises.</div>
+    <div class="section-sub">Pay once, use the full system from prep to closing. No monthly subscription, no hidden fees.</div>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">Basic</div>
+      <div class="price-amount">$199</div>
+      <div class="price-desc">Everything you need to prep, price, and list.</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Smart Onboarding & Roadmap</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> AI Timeline Engine</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> ROI Renovation Advisor</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Listing Builder (3 tones)</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> MLS Guidance Module</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Savings Calculator</div>
+      <div class="price-feature dim"><span class="pf-icon">—</span> Offer Comparison Dashboard</div>
+      <div class="price-feature dim"><span class="pf-icon">—</span> Contract Generator</div>
+      <div class="price-feature dim"><span class="pf-icon">—</span> Attorney Referral Credit</div>
+      <button class="price-btn secondary">Get Started</button>
+    </div>
+
+    <div class="price-card featured">
+      <div class="price-tier">Pro</div>
+      <div class="price-amount">$299</div>
+      <div class="price-desc">The complete system — from prep to signed contract.</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Everything in Basic</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Listing Builder (all 5 tones)</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Showing Tracker & Scheduler</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Offer Comparison Dashboard</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Contract Generator</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> State-specific legal templates</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> $100 attorney review credit</div>
+      <div class="price-feature dim"><span class="pf-icon">—</span> Priority attorney matching</div>
+      <div class="price-feature dim"><span class="pf-icon">—</span> Negotiation script library</div>
+      <button class="price-btn primary-btn">Get Pro Access</button>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Premium</div>
+      <div class="price-amount">$499</div>
+      <div class="price-desc">White-glove support for high-value or complex sales.</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Everything in Pro</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Priority attorney matching</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> $200 attorney review credit</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Negotiation script library</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Email follow-up templates</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Dedicated support (async)</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Affiliate MLS partner pricing</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Unlimited AI re-generations</div>
+      <div class="price-feature"><span class="pf-icon">✓</span> Post-close tax doc checklist</div>
+      <button class="price-btn secondary">Get Premium</button>
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 32px 48px 80px; color: var(--muted); font-family: var(--sans); font-size: 14px;">
+    Avg. 3% commission on $450K home = <strong style="color: var(--white);">$13,500</strong> · OwnClose Pro = <strong style="color: var(--accent);">$299</strong> · Your savings = <strong style="color: var(--accent);">$13,201</strong><br><br>
+    <em style="font-size: 12px;">OwnClose is not a law firm. Always have a licensed attorney review legal documents.</em>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Own<span>Close</span></div>
+    <div class="footer-copy">© 2026 OwnClose · Built by Loam Strategy · Not legal advice.</div>
+  </footer>
+</div>
+
+<script>
+  // ---- SCREEN NAVIGATION ----
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + id);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ---- SAVINGS CALCULATOR ----
+  function updateCalc(val) {
+    const price = parseInt(val);
+    const pct = (price - 150000) / (2000000 - 150000) * 100;
+    document.getElementById('slider-fill').style.width = pct + '%';
+    document.getElementById('hero-price').textContent = '$' + price.toLocaleString();
+    const comm = Math.round(price * 0.03);
+    const savings = comm - 299;
+    document.getElementById('commission').textContent = '-$' + comm.toLocaleString();
+    document.getElementById('savings').textContent = '$' + savings.toLocaleString();
+  }
+
+  // ---- FEATURE PANEL ----
+  const features = [
+    {
+      title: 'AI Timeline Engine',
+      sub: 'The most valuable thing Robert said AI gave him was a timeline. We built it into a visual dashboard — every phase, every task, every deadline, auto-generated from your target date.',
+      outputs: ['Week-by-week task roadmap from prep to close','Deadline reminders tied to your move-out date','Templates and scripts for each phase','Progress dashboard with completion tracking']
+    },
+    {
+      title: 'ROI Renovation Advisor',
+      sub: 'Stop guessing whether to replace the carpet. Enter your budget and condition, and get a ranked list of improvements — with ROI estimates, "Do This First" picks, and clear "Skip This" warnings.',
+      outputs: ['Ranked improvements by return on investment','Cost vs. estimated value-add per item','"Skip This" list to protect your budget','Neighborhood price ceiling analysis']
+    },
+    {
+      title: 'Smart Listing Builder',
+      sub: 'AI-generated MLS copy, Zillow description, social post, and open house handout — with a tone selector that matches your target buyer. Five tones, unlimited re-generations.',
+      outputs: ['MLS-ready property description','Zillow-optimized listing version','Open house flyer copy','Social media announcement post','Five buyer tone options']
+    },
+    {
+      title: 'MLS Guidance',
+      sub: 'FSBO sellers still need the MLS. We guide you step-by-step through flat-fee listing options in your state — and compare providers so you pick the right one.',
+      outputs: ['State-by-state flat-fee MLS comparison','Step-by-step submission walkthrough','Estimated cost: $99–$299 (vs. $10K+ commission)','Direct affiliate links to trusted providers']
+    },
+    {
+      title: 'Offer Comparison Dashboard',
+      sub: 'When offers come in, emotions run high. We strip out the noise. Enter each offer\'s key terms and we rank them by strongest, highest net, and safest — with an AI recommendation.',
+      outputs: ['Side-by-side offer comparison table','Net proceeds calculator per offer','Risk flag analysis (FHA vs conventional, contingencies)','AI pick with plain-English reasoning']
+    },
+    {
+      title: 'Contract Generator',
+      sub: 'State-specific purchase agreement templates, auto-filled with your property details and accepted offer terms. Then connect to a flat-fee attorney for the 10% that AI shouldn\'t do alone.',
+      outputs: ['State-specific contract templates','Auto-population from your offer data','Embedded flat-fee attorney marketplace','Built-in legal disclaimer and review prompt']
+    },
+    {
+      title: 'Savings Calculator',
+      sub: 'The homepage conversion engine. Before anyone creates an account, they see exactly how much they keep. It\'s not abstract — it\'s their address and their number.',
+      outputs: ['Live slider with real-time calculation','Instant commission vs. app cost comparison','Net savings in bold — their number, not an average','Single-click CTA to start the roadmap']
+    }
+  ];
+
+  function showFeature(idx, el) {
+    document.querySelectorAll('.feature-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    const f = features[idx];
+    document.getElementById('feature-detail').innerHTML = `
+      <h3>${f.title}</h3>
+      <div class="detail-sub">${f.sub}</div>
+      <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 16px;">What You Get</div>
+      <div class="output-list">
+        ${f.outputs.map(o => `
+          <div class="output-item">
+            <div class="output-check">✓</div>
+            <span>${o}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  // Init first feature
+  showFeature(0, document.querySelector('.feature-nav-item'));
+
+  // ---- ONBOARDING ----
+  let currentStep = 1;
+  const totalSteps = 6;
+
+  function nextStep() {
+    if (currentStep < totalSteps) {
+      document.getElementById('step-' + currentStep).classList.remove('active');
+      currentStep++;
+      document.getElementById('step-' + currentStep).classList.add('active');
+      updateProgress();
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 1) {
+      document.getElementById('step-' + currentStep).classList.remove('active');
+      currentStep--;
+      document.getElementById('step-' + currentStep).classList.add('active');
+      updateProgress();
+    }
+  }
+
+  function updateProgress() {
+    const steps = document.querySelectorAll('.prog-step');
+    steps.forEach((s, i) => {
+      s.classList.remove('done', 'active');
+      if (i < currentStep - 1) s.classList.add('done');
+      else if (i === currentStep - 1) s.classList.add('active');
+    });
+    document.getElementById('step-counter').textContent = `Step ${currentStep} of ${totalSteps}`;
+    document.getElementById('back-btn').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+    const nextBtn = document.getElementById('next-btn');
+    if (currentStep === totalSteps) {
+      nextBtn.style.display = 'none';
+    } else {
+      nextBtn.style.display = 'block';
+    }
+  }
+
+  function selectOption(el) {
+    el.closest('.onboard-options').querySelectorAll('.onboard-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ---- DASHBOARD TABS ----
+  function switchDashTab(tab, el) {
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+    document.getElementById('tab-' + tab).style.display = 'block';
+    document.querySelectorAll('.dash-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ---- LISTING BUILDER ----
+  function selectTone(el) {
+    document.querySelectorAll('.tone-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function generateListing() {
+    const btn = document.querySelector('.generate-btn');
+    btn.textContent = 'Generating...';
+    btn.style.opacity = '0.7';
+    setTimeout(() => {
+      btn.textContent = 'Regenerate →';
+      btn.style.opacity = '1';
+      document.getElementById('listing-output').innerHTML = `
+        <div style="margin-bottom: 28px;">
+          <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 12px;">MLS Description</div>
+          <p class="output-text">Welcome to this beautifully maintained 4-bedroom, 2.5-bath family home nestled on a quiet cul-de-sac in the heart of Cooper City. The newly renovated kitchen (2023) is a showstopper — featuring quartz countertops, stainless appliances, and an open flow into the sun-drenched living area with soaring vaulted ceilings.
+
+Step outside to your private pool and expansive outdoor living space — the backyard your family has been dreaming of. Zoned for Cooper City's top-rated A-rated elementary school, and just minutes from Whole Foods, I-595, and Cooper City Regional Park.
+
+<strong style="color: var(--accent);">Listed at $452,000 · 4BR / 2.5BA · 2,240 sqft</strong></p>
+        </div>
+        <div style="margin-bottom: 28px; padding-top: 20px; border-top: 1px solid var(--border);">
+          <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px;">Zillow Headline</div>
+          <p class="output-text" style="font-size: 17px; font-weight: 500; color: var(--white);">"Pool home on cul-de-sac • Renovated kitchen • A-rated schools • Move-in ready"</p>
+        </div>
+        <div style="padding-top: 20px; border-top: 1px solid var(--border);">
+          <div style="font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px;">Social Post</div>
+          <p class="output-text" style="font-size: 14px;">🏠 Just listed in Cooper City! 4BD / 2.5BA pool home on a quiet cul-de-sac. Renovated kitchen, vaulted ceilings, A-rated schools, 5 min to everything. $452K — no agents, no fees. DM for a private showing. #CooperCity #FSBO #HomeSale</p>
+        </div>
+      `;
+    }, 1400);
+  }
+
+  function copyListing() {
+    const el = document.querySelector('.copy-btn');
+    el.textContent = 'Copied!';
+    el.style.color = 'var(--accent)';
+    setTimeout(() => { el.textContent = 'Copy All'; el.style.color = ''; }, 2000);
+  }
+</script>
+</body>
+</html>
