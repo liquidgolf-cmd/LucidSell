@@ -1070,49 +1070,49 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
       <div class="phase-tracker">
         <div class="phase-tracker-head">Sale Progress</div>
         <div class="phase-row">
-          <div class="phase-step done" data-phase="1"><div class="phase-step-n">01</div><div class="phase-step-name">Plan</div></div>
-          <div class="phase-step current" data-phase="2"><div class="phase-step-n">02</div><div class="phase-step-name">Prep</div></div>
-          <div class="phase-step" data-phase="3"><div class="phase-step-n">03</div><div class="phase-step-name">Price</div></div>
-          <div class="phase-step" data-phase="4"><div class="phase-step-n">04</div><div class="phase-step-name">Market</div></div>
-          <div class="phase-step" data-phase="5"><div class="phase-step-n">05</div><div class="phase-step-name">Show</div></div>
-          <div class="phase-step" data-phase="6"><div class="phase-step-n">06</div><div class="phase-step-name">Offer</div></div>
-          <div class="phase-step" data-phase="7"><div class="phase-step-n">07</div><div class="phase-step-name">Close</div></div>
+          <div class="phase-step done" data-phase="1" role="button" tabindex="0" onclick="jumpToPhase(1)"><div class="phase-step-n">01</div><div class="phase-step-name">Plan</div></div>
+          <div class="phase-step current" data-phase="2" role="button" tabindex="0" onclick="jumpToPhase(2)"><div class="phase-step-n">02</div><div class="phase-step-name">Prep</div></div>
+          <div class="phase-step" data-phase="3" role="button" tabindex="0" onclick="jumpToPhase(3)"><div class="phase-step-n">03</div><div class="phase-step-name">Price</div></div>
+          <div class="phase-step" data-phase="4" role="button" tabindex="0" onclick="jumpToPhase(4)"><div class="phase-step-n">04</div><div class="phase-step-name">Market</div></div>
+          <div class="phase-step" data-phase="5" role="button" tabindex="0" onclick="jumpToPhase(5)"><div class="phase-step-n">05</div><div class="phase-step-name">Show</div></div>
+          <div class="phase-step" data-phase="6" role="button" tabindex="0" onclick="jumpToPhase(6)"><div class="phase-step-n">06</div><div class="phase-step-name">Offer</div></div>
+          <div class="phase-step" data-phase="7" role="button" tabindex="0" onclick="jumpToPhase(7)"><div class="phase-step-n">07</div><div class="phase-step-name">Close</div></div>
         </div>
         <button class="price-btn" id="phase-advance-btn" style="margin:16px 24px 20px 24px;width:auto;max-width:260px;" onclick="advancePhase()">Complete phase → Next</button>
       </div>
       <div class="task-list">
         <div class="task-head">Current Tasks — click the circle to mark done; add notes below each task</div>
-        <div class="task-item" data-task-id="task-1" data-due="Done">
+        <div class="task-item" data-task-id="task-1" data-phase="Prep" data-due="Done">
           <div class="task-name-wrap"><div class="task-check done" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete">✓</div><span>Deep clean all rooms</span></div>
           <div class="task-due">Done</div>
           <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
           <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
         </div>
-        <div class="task-item" data-task-id="task-2" data-due="Done">
+        <div class="task-item" data-task-id="task-2" data-phase="Prep" data-due="Done">
           <div class="task-name-wrap"><div class="task-check done" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete">✓</div><span>Repaint living room &amp; kitchen</span></div>
           <div class="task-due">Done</div>
           <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
           <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
         </div>
-        <div class="task-item" data-task-id="task-3" data-due="Done">
+        <div class="task-item" data-task-id="task-3" data-phase="Prep" data-due="Done">
           <div class="task-name-wrap"><div class="task-check done" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete">✓</div><span>Professional photography scheduled</span></div>
           <div class="task-due">Done</div>
           <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
           <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
         </div>
-        <div class="task-item" data-task-id="task-4" data-due="Due in 3 days">
+        <div class="task-item" data-task-id="task-4" data-phase="Price" data-due="Due in 3 days">
           <div class="task-name-wrap"><div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div><span>Complete listing copy in Lucid</span></div>
           <div class="task-due">Due in 3 days</div>
           <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
           <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
         </div>
-        <div class="task-item" data-task-id="task-5" data-due="Due in 5 days">
+        <div class="task-item" data-task-id="task-5" data-phase="Market" data-due="Due in 5 days">
           <div class="task-name-wrap"><div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div><span>Choose flat-fee MLS provider</span></div>
           <div class="task-due">Due in 5 days</div>
           <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
           <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
         </div>
-        <div class="task-item" data-task-id="task-6" data-due="Due in 6 days">
+        <div class="task-item" data-task-id="task-6" data-phase="Show" data-due="Due in 6 days">
           <div class="task-name-wrap"><div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div><span>Set showing availability</span></div>
           <div class="task-due">Due in 6 days</div>
           <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
@@ -1523,6 +1523,7 @@ function updatePhaseUI(phaseIndex) {
       btn.style.display = 'inline-block';
     }
   }
+  filterTasksByPhase();
 }
 function getStoredPhase() {
   try {
@@ -1547,12 +1548,31 @@ function advancePhase() {
   } catch (e) {}
   updatePhaseUI(next);
 }
+function getCurrentPhaseName() {
+  var idx = getStoredPhase();
+  return PHASE_NAMES[idx - 1] || 'Prep';
+}
+function filterTasksByPhase() {
+  var phaseName = getCurrentPhaseName();
+  document.querySelectorAll('.task-item[data-task-id]').forEach(function(item) {
+    var p = item.getAttribute('data-phase') || 'Prep';
+    item.style.display = (p === phaseName) ? '' : 'none';
+  });
+}
+function jumpToPhase(target) {
+  if (!target || target < 1 || target > PHASE_NAMES.length) return;
+  try {
+    localStorage.setItem('lucid_dash_phase', String(target));
+  } catch (e) {}
+  updatePhaseUI(target);
+}
 document.addEventListener('DOMContentLoaded', () => {
   updateCalc(450000);
   restoreOnboardingState();
   restoreDashboardTasks();
   restoreDashboardPhase();
   renderPhotoIssues();
+  filterTasksByPhase();
 });
 
 // DASHBOARD TASKS — mark complete and add notes (persisted in localStorage)
@@ -2009,6 +2029,7 @@ function addPhotoIssueAsTask(issueId) {
   const item = document.createElement('div');
   item.className = 'task-item';
   item.setAttribute('data-task-id', taskId);
+  item.setAttribute('data-phase', 'Prep');
   item.setAttribute('data-due', 'Due');
   const label = 'Prep · ' + (issue.title || 'Photo-based improvement');
   item.innerHTML = `
