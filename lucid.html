@@ -1065,19 +1065,20 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
         <div class="metric"><div class="metric-label">Days Active</div><div class="metric-val">14</div></div>
         <div class="metric"><div class="metric-label">Tasks Complete</div><div class="metric-val green">8/12</div></div>
         <div class="metric"><div class="metric-label">Saved vs. Agent</div><div class="metric-val rust">$13.2K</div></div>
-        <div class="metric"><div class="metric-label">Current Phase</div><div class="metric-val" style="font-size:20px;">Prep</div></div>
+        <div class="metric"><div class="metric-label">Current Phase</div><div class="metric-val" id="current-phase-name" style="font-size:20px;">Prep</div></div>
       </div>
       <div class="phase-tracker">
         <div class="phase-tracker-head">Sale Progress</div>
         <div class="phase-row">
-          <div class="phase-step done"><div class="phase-step-n">01</div><div class="phase-step-name">Plan</div></div>
-          <div class="phase-step current"><div class="phase-step-n">02</div><div class="phase-step-name">Prep</div></div>
-          <div class="phase-step"><div class="phase-step-n">03</div><div class="phase-step-name">Price</div></div>
-          <div class="phase-step"><div class="phase-step-n">04</div><div class="phase-step-name">Market</div></div>
-          <div class="phase-step"><div class="phase-step-n">05</div><div class="phase-step-name">Show</div></div>
-          <div class="phase-step"><div class="phase-step-n">06</div><div class="phase-step-name">Offer</div></div>
-          <div class="phase-step"><div class="phase-step-n">07</div><div class="phase-step-name">Close</div></div>
+          <div class="phase-step done" data-phase="1"><div class="phase-step-n">01</div><div class="phase-step-name">Plan</div></div>
+          <div class="phase-step current" data-phase="2"><div class="phase-step-n">02</div><div class="phase-step-name">Prep</div></div>
+          <div class="phase-step" data-phase="3"><div class="phase-step-n">03</div><div class="phase-step-name">Price</div></div>
+          <div class="phase-step" data-phase="4"><div class="phase-step-n">04</div><div class="phase-step-name">Market</div></div>
+          <div class="phase-step" data-phase="5"><div class="phase-step-n">05</div><div class="phase-step-name">Show</div></div>
+          <div class="phase-step" data-phase="6"><div class="phase-step-n">06</div><div class="phase-step-name">Offer</div></div>
+          <div class="phase-step" data-phase="7"><div class="phase-step-n">07</div><div class="phase-step-name">Close</div></div>
         </div>
+        <button class="price-btn" id="phase-advance-btn" style="margin:16px 24px 20px 24px;width:auto;max-width:260px;" onclick="advancePhase()">Complete phase → Next</button>
       </div>
       <div class="task-list">
         <div class="task-head">Current Tasks — click the circle to mark done; add notes below each task</div>
@@ -1489,10 +1490,66 @@ function updateCalc(val) {
   document.getElementById('savings').textContent = '$' + savings.toLocaleString();
   document.getElementById('savings-cta').textContent = '$' + savings.toLocaleString();
 }
+// DASHBOARD PHASE PROGRESSION
+var PHASE_NAMES = ['Plan','Prep','Price','Market','Show','Offer','Close'];
+function updatePhaseUI(phaseIndex) {
+  if (!phaseIndex || phaseIndex < 1 || phaseIndex > PHASE_NAMES.length) return;
+  var steps = document.querySelectorAll('.phase-step[data-phase]');
+  steps.forEach(function(step) {
+    var p = parseInt(step.getAttribute('data-phase'), 10);
+    if (!p) return;
+    if (p < phaseIndex) {
+      step.classList.add('done');
+      step.classList.remove('current');
+    } else if (p === phaseIndex) {
+      step.classList.add('current');
+      step.classList.remove('done');
+    } else {
+      step.classList.remove('done');
+      step.classList.remove('current');
+    }
+  });
+  var label = document.getElementById('current-phase-name');
+  if (label && PHASE_NAMES[phaseIndex - 1]) {
+    label.textContent = PHASE_NAMES[phaseIndex - 1];
+  }
+  var btn = document.getElementById('phase-advance-btn');
+  if (btn) {
+    if (phaseIndex >= PHASE_NAMES.length) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = 'inline-block';
+    }
+  }
+}
+function getStoredPhase() {
+  try {
+    var raw = localStorage.getItem('lucid_dash_phase');
+    var n = parseInt(raw, 10);
+    if (!n || n < 1 || n > PHASE_NAMES.length) return 2;
+    return n;
+  } catch (e) {
+    return 2;
+  }
+}
+function restoreDashboardPhase() {
+  var phase = getStoredPhase();
+  updatePhaseUI(phase);
+}
+function advancePhase() {
+  var phase = getStoredPhase();
+  if (phase >= PHASE_NAMES.length) return;
+  var next = phase + 1;
+  try {
+    localStorage.setItem('lucid_dash_phase', String(next));
+  } catch (e) {}
+  updatePhaseUI(next);
+}
 document.addEventListener('DOMContentLoaded', () => {
   updateCalc(450000);
   restoreOnboardingState();
   restoreDashboardTasks();
+  restoreDashboardPhase();
 });
 
 // DASHBOARD TASKS — mark complete and add notes (persisted in localStorage)
