@@ -414,13 +414,22 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
 .phase-step.current .phase-step-name { color: var(--accent); }
 .task-list { background: var(--white); border: 1px solid var(--border); }
 .task-head { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; padding: 14px 24px; border-bottom: 1px solid var(--border); }
-.task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.task-item { display: flex; flex-wrap: wrap; align-items: center; padding: 15px 24px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 0; }
 .task-item:last-child { border-bottom: none; }
 .task-item:hover { background: var(--paper2); }
-.task-name-wrap { display: flex; align-items: center; gap: 12px; font-size: 15px; }
-.task-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.task-name-wrap { display: flex; align-items: center; gap: 12px; font-size: 15px; flex: 1; min-width: 0; }
+.task-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
 .task-check.done { background: var(--accent); border-color: var(--accent); color: var(--white); }
+.task-check:hover { border-color: var(--accent); }
 .task-due { font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 600; }
+.task-notes-wrap { width: 100%; flex-basis: 100%; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: none; }
+.task-item.has-notes .task-notes-wrap,
+.task-item.task-notes-open .task-notes-wrap { display: block; }
+.task-notes-input { width: 100%; min-height: 48px; padding: 8px 12px; font-family: var(--sans); font-size: 13px; color: var(--ink); background: var(--paper2); border: 1px solid var(--border); border-radius: 4px; resize: vertical; outline: none; box-sizing: border-box; }
+.task-notes-input:focus { border-color: var(--accent); }
+.task-notes-input::placeholder { color: var(--muted); }
+.task-note-toggle { font-family: var(--sans); font-size: 11px; font-weight: 600; color: var(--accent); background: none; border: none; cursor: pointer; padding: 4px 0; margin-top: 4px; }
+.task-note-toggle:hover { text-decoration: underline; }
 
 /* ROI */
 .roi-item { background: var(--white); border: 1px solid var(--border); padding: 24px; margin-bottom: 12px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; transition: box-shadow 0.15s; }
@@ -506,7 +515,7 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
 
 <!-- NAV -->
 <nav>
-  <img src="lucid-logo.png" alt="Lucid" class="nav-logo">
+  <img src="lucid_logo.png" alt="Lucid" class="nav-logo">
   <div class="nav-right">
     <button class="nav-link" onclick="showScreen('home')">Home</button>
     <button class="nav-link" onclick="showScreen('listing')">Listing Builder</button>
@@ -1069,13 +1078,43 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
         </div>
       </div>
       <div class="task-list">
-        <div class="task-head">Current Tasks</div>
-        <div class="task-item"><div class="task-name-wrap"><div class="task-check done">✓</div><span>Deep clean all rooms</span></div><div class="task-due">Done</div></div>
-        <div class="task-item"><div class="task-name-wrap"><div class="task-check done">✓</div><span>Repaint living room &amp; kitchen</span></div><div class="task-due">Done</div></div>
-        <div class="task-item"><div class="task-name-wrap"><div class="task-check done">✓</div><span>Professional photography scheduled</span></div><div class="task-due">Done</div></div>
-        <div class="task-item"><div class="task-name-wrap"><div class="task-check"></div><span>Complete listing copy in Lucid</span></div><div class="task-due">Due in 3 days</div></div>
-        <div class="task-item"><div class="task-name-wrap"><div class="task-check"></div><span>Choose flat-fee MLS provider</span></div><div class="task-due">Due in 5 days</div></div>
-        <div class="task-item"><div class="task-name-wrap"><div class="task-check"></div><span>Set showing availability</span></div><div class="task-due">Due in 6 days</div></div>
+        <div class="task-head">Current Tasks — click the circle to mark done; add notes below each task</div>
+        <div class="task-item" data-task-id="task-1" data-due="Done">
+          <div class="task-name-wrap"><div class="task-check done" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete">✓</div><span>Deep clean all rooms</span></div>
+          <div class="task-due">Done</div>
+          <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+          <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+        </div>
+        <div class="task-item" data-task-id="task-2" data-due="Done">
+          <div class="task-name-wrap"><div class="task-check done" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete">✓</div><span>Repaint living room &amp; kitchen</span></div>
+          <div class="task-due">Done</div>
+          <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+          <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+        </div>
+        <div class="task-item" data-task-id="task-3" data-due="Done">
+          <div class="task-name-wrap"><div class="task-check done" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete">✓</div><span>Professional photography scheduled</span></div>
+          <div class="task-due">Done</div>
+          <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+          <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+        </div>
+        <div class="task-item" data-task-id="task-4" data-due="Due in 3 days">
+          <div class="task-name-wrap"><div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div><span>Complete listing copy in Lucid</span></div>
+          <div class="task-due">Due in 3 days</div>
+          <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+          <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+        </div>
+        <div class="task-item" data-task-id="task-5" data-due="Due in 5 days">
+          <div class="task-name-wrap"><div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div><span>Choose flat-fee MLS provider</span></div>
+          <div class="task-due">Due in 5 days</div>
+          <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+          <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+        </div>
+        <div class="task-item" data-task-id="task-6" data-due="Due in 6 days">
+          <div class="task-name-wrap"><div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div><span>Set showing availability</span></div>
+          <div class="task-due">Due in 6 days</div>
+          <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+          <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+        </div>
       </div>
     </div>
 
@@ -1451,7 +1490,83 @@ function updateCalc(val) {
 document.addEventListener('DOMContentLoaded', () => {
   updateCalc(450000);
   restoreOnboardingState();
+  restoreDashboardTasks();
 });
+
+// DASHBOARD TASKS — mark complete and add notes (persisted in localStorage)
+function toggleTask(checkEl) {
+  var item = checkEl.closest('.task-item');
+  if (!item) return;
+  var id = item.getAttribute('data-task-id');
+  var dueEl = item.querySelector('.task-due');
+  var dueDefault = item.getAttribute('data-due') || 'Due';
+  var done = checkEl.classList.toggle('done');
+  checkEl.textContent = done ? '✓' : '';
+  if (dueEl) dueEl.textContent = done ? 'Done' : dueDefault;
+  try {
+    var state = JSON.parse(localStorage.getItem('lucid_dash_tasks') || '{}');
+    state[id] = done;
+    localStorage.setItem('lucid_dash_tasks', JSON.stringify(state));
+  } catch (e) {}
+}
+function saveTaskNote(textareaEl) {
+  var item = textareaEl.closest('.task-item');
+  if (!item) return;
+  var id = item.getAttribute('data-task-id');
+  var note = textareaEl.value.trim();
+  try {
+    var notes = JSON.parse(localStorage.getItem('lucid_dash_notes') || '{}');
+    if (note) notes[id] = note; else delete notes[id];
+    localStorage.setItem('lucid_dash_notes', JSON.stringify(notes));
+  } catch (e) {}
+  item.classList.toggle('has-notes', !!note);
+  var btn = item.querySelector('.task-note-toggle');
+  if (btn) btn.textContent = note ? 'Edit note' : '+ Add note';
+}
+function toggleTaskNote(btn) {
+  var item = btn.closest('.task-item');
+  if (!item) return;
+  var wrap = item.querySelector('.task-notes-wrap');
+  var input = item.querySelector('.task-notes-input');
+  if (!wrap || !input) return;
+  var isShown = item.classList.contains('task-notes-open');
+  if (isShown) {
+    item.classList.remove('task-notes-open');
+    btn.textContent = input.value.trim() ? 'Edit note' : '+ Add note';
+  } else {
+    item.classList.add('task-notes-open');
+    btn.textContent = 'Hide note';
+    input.focus();
+  }
+}
+function restoreDashboardTasks() {
+  try {
+    var state = JSON.parse(localStorage.getItem('lucid_dash_tasks') || '{}');
+    var notes = JSON.parse(localStorage.getItem('lucid_dash_notes') || '{}');
+    document.querySelectorAll('.task-item[data-task-id]').forEach(function(item) {
+      var id = item.getAttribute('data-task-id');
+      var check = item.querySelector('.task-check');
+      var dueEl = item.querySelector('.task-due');
+      var dueDefault = item.getAttribute('data-due') || 'Due';
+      if (state[id] && check) {
+        check.classList.add('done');
+        check.textContent = '✓';
+        if (dueEl) dueEl.textContent = 'Done';
+      } else if (check && dueEl) {
+        check.classList.remove('done');
+        check.textContent = '';
+        dueEl.textContent = dueDefault;
+      }
+      var noteInput = item.querySelector('.task-notes-input');
+      if (notes[id] && noteInput) {
+        noteInput.value = notes[id];
+        item.classList.add('has-notes');
+        var tbtn = item.querySelector('.task-note-toggle');
+        if (tbtn) tbtn.textContent = 'Edit note';
+      }
+    });
+  } catch (e) {}
+}
 
 // MODULE EXPLORER
 const mods = [
