@@ -1324,12 +1324,34 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
       <div class="contract-form">
         <div style="font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:24px;">Contract Details</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div class="form-group"><label class="form-label">State</label><input class="form-input" type="text" placeholder="Utah" style="padding:12px 14px;font-size:15px;"></div>
-          <div class="form-group"><label class="form-label">Accepted Offer Price</label><input class="form-input" type="text" placeholder="$458,000" style="padding:12px 14px;font-size:15px;"></div>
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <select class="form-input" id="contract-state" style="padding:12px 14px;font-size:15px;">
+              <option value="UT" selected>Utah</option>
+              <option value="CA">California</option>
+              <option value="TX">Texas</option>
+              <option value="FL">Florida</option>
+              <option value="NY">New York</option>
+              <option value="other">Other (generic)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Property Address</label><input class="form-input" id="contract-address" type="text" placeholder="123 Main Street, Salt Lake City, UT 84101" style="padding:12px 14px;font-size:15px;"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div class="form-group"><label class="form-label">Buyer Name</label><input class="form-input" type="text" placeholder="John & Jane Smith" style="padding:12px 14px;font-size:15px;"></div>
-          <div class="form-group"><label class="form-label">Closing Date</label><input class="form-input" type="date" style="padding:12px 14px;font-size:15px;"></div>
+          <div class="form-group"><label class="form-label">Buyer Name(s)</label><input class="form-input" id="contract-buyer" type="text" placeholder="John & Jane Smith" style="padding:12px 14px;font-size:15px;"></div>
+          <div class="form-group"><label class="form-label">Accepted Offer Price</label><input class="form-input" id="contract-price" type="text" placeholder="$458,000" style="padding:12px 14px;font-size:15px;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label class="form-label">Earnest Money (% of price)</label><input class="form-input" id="contract-earnest" type="text" placeholder="2%" style="padding:12px 14px;font-size:15px;"></div>
+          <div class="form-group"><label class="form-label">Closing Date</label><input class="form-input" id="contract-closing" type="date" style="padding:12px 14px;font-size:15px;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group"><label class="form-label">Financing Contingency (days)</label><input class="form-input" id="contract-financing-days" type="number" min="0" placeholder="21" style="padding:12px 14px;font-size:15px;"></div>
+          <div class="form-group"><label class="form-label">Other Contingencies</label><input class="form-input" id="contract-contingencies" type="text" placeholder="Inspection, appraisal, sale of buyer's home" style="padding:12px 14px;font-size:15px;"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Context / Notes for AI (optional)</label>
+          <textarea class="form-input" id="contract-notes" style="padding:10px 12px;font-size:14px;min-height:72px;" placeholder="Anything unusual about this deal (credits, repairs, rent-back, etc.). This can be used by AI in a future version to refine the draft."></textarea>
         </div>
         <button class="gen-btn" onclick="generateContract()">Generate Contract Draft →</button>
         <div style="font-family:var(--sans);font-size:11px;color:var(--muted);margin-top:12px;text-align:center;">⚠ Always have a licensed real estate attorney review before signing.</div>
@@ -1770,7 +1792,30 @@ async function generateContract() {
   const el = document.getElementById('contractOutput');
   const textEl = document.getElementById('contractText');
   try {
-    const res = await fetch('/api/generate-contract', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+    const state = (document.getElementById('contract-state')?.value || 'UT').toUpperCase();
+    const address = document.getElementById('contract-address')?.value || '';
+    const buyerName = document.getElementById('contract-buyer')?.value || '';
+    const priceRaw = document.getElementById('contract-price')?.value || '';
+    const earnestRaw = document.getElementById('contract-earnest')?.value || '';
+    const closingDate = document.getElementById('contract-closing')?.value || '';
+    const financingDaysRaw = document.getElementById('contract-financing-days')?.value || '';
+    const otherContingencies = document.getElementById('contract-contingencies')?.value || '';
+    const notes = document.getElementById('contract-notes')?.value || '';
+    const res = await fetch('/api/generate-contract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        state,
+        propertyAddress: address,
+        buyerName,
+        offerPrice: priceRaw,
+        earnestPercent: earnestRaw,
+        closingDate,
+        financingDays: financingDaysRaw,
+        otherContingencies,
+        contextNotes: notes
+      })
+    });
     const data = await res.json().catch(() => ({}));
     if (res.ok && data.contractText && textEl) {
       textEl.innerHTML = data.contractText;
