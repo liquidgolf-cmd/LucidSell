@@ -1243,6 +1243,8 @@ footer { background: var(--ink); color: var(--paper); padding: 40px 48px; displa
           <div class="pa-action-title">Your Prioritized Action Plan</div>
           <div id="pa-actionRows"></div>
         </div>
+        <!-- Tasks integration -->
+        <div id="photo-issues"></div>
         <div class="pa-reset-row">
           <button class="pa-analyze-btn" onclick="paRunAnalysis()">Re-Analyze →</button>
           <button class="pa-reset-btn" onclick="paReset()">Upload New Photos</button>
@@ -1550,6 +1552,7 @@ document.addEventListener('DOMContentLoaded', () => {
   restoreOnboardingState();
   restoreDashboardTasks();
   restoreDashboardPhase();
+  renderPhotoIssues();
 });
 
 // DASHBOARD TASKS — mark complete and add notes (persisted in localStorage)
@@ -1767,6 +1770,37 @@ let paCurrentIssues = [];
 let paSortHighFirst = true;
 let paLoadInterval;
 
+// Photo issues storage helpers
+function setPhotoIssues(issues) {
+  try {
+    localStorage.setItem('lucid_photo_issues', JSON.stringify(issues || []));
+  } catch (e) {}
+}
+function getPhotoIssues() {
+  try {
+    const raw = localStorage.getItem('lucid_photo_issues');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+function getPhotoTaskMap() {
+  try {
+    const raw = localStorage.getItem('lucid_photo_task_map') || '{}';
+    const map = JSON.parse(raw);
+    return map && typeof map === 'object' ? map : {};
+  } catch (e) {
+    return {};
+  }
+}
+function setPhotoTaskMap(map) {
+  try {
+    localStorage.setItem('lucid_photo_task_map', JSON.stringify(map || {}));
+  } catch (e) {}
+}
+
 const paFileInput = document.getElementById('pa-fileInput');
 const paUploadZone = document.getElementById('pa-uploadZone');
 const paPhotoGrid = document.getElementById('pa-photoGrid');
@@ -1864,6 +1898,8 @@ async function paRunAnalysis() {
 
 function paRenderResults(data) {
   paCurrentIssues = data.issues || [];
+  // Persist issues so they can be turned into tasks later
+  setPhotoIssues(paCurrentIssues);
   document.getElementById('pa-photoCount').textContent = paFiles.length;
   const hl = document.getElementById('pa-headline');
   hl.innerHTML = (data.summary.headline||'').replace(/\b(high|good|great|strong|ready|excellent)\b/gi, '<em>$&</em>');
@@ -1876,6 +1912,7 @@ function paRenderResults(data) {
   `;
   paRenderCards(paCurrentIssues);
   paRenderActionPlan(data.actionPlan||[]);
+  renderPhotoIssues();
   document.getElementById('pa-results').classList.add('visible');
 }
 
@@ -1924,6 +1961,75 @@ function paSetLoading(on) {
 function paShowError(msg) { document.getElementById('pa-errorMsg').textContent=msg; document.getElementById('pa-error').classList.add('visible'); }
 function paHideError() { document.getElementById('pa-error').classList.remove('visible'); }
 function paReset() { paFiles=[]; paRenderThumbs(); document.getElementById('pa-results').classList.remove('visible'); paHideError(); }
+
+// Render issues in Photo tab with \"Add as task\" controls
+function renderPhotoIssues() {
+  const container = document.getElementById('photo-issues');
+  if (!container) return;
+  const issues = getPhotoIssues();
+  const map = getPhotoTaskMap();
+  if (!issues.length) {
+    container.innerHTML = '<div style="font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:12px;">Run an analysis to turn specific photo findings into Prep tasks.</div>';
+    return;
+  }
+  let html = '<div style="margin-top:20px;padding:16px 20px;border:1px solid var(--border);background:var(--paper2);border-radius:4px;">';
+  html += '<div style="font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Add to your Prep checklist</div>';
+  html += '<div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Pick the most important items below and add them as actionable tasks to your dashboard.</div>';
+  issues.forEach((issue) => {
+    const iid = String(issue.id);
+    const already = !!map[iid];
+    const phaseLabel = 'Prep Phase';
+    html += '<div style="padding:10px 0;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px;">';
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><div style="font-family:var(--sans);font-size:13px;font-weight:600;">${issue.title || 'Improvement'}</div><span style="font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">${phaseLabel}</span></div>`;
+    if (issue.action) {
+      html += `<div style="font-size:12px;color:var(--muted);">${issue.action}</div>`;
+    }
+    const btnLabel = already ? 'Added to tasks' : 'Add as task';
+    const btnDisabled = already ? 'disabled' : '';
+    html += `<button class="price-btn" style="margin-top:6px;width:auto;padding:6px 10px;font-size:11px;" ${btnDisabled} onclick="addPhotoIssueAsTask('${iid}')">${btnLabel}</button>`;
+    html += '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// Create a dashboard task from a photo issue
+function addPhotoIssueAsTask(issueId) {
+  const issues = getPhotoIssues();
+  const issue = issues.find(i => String(i.id) === String(issueId));
+  if (!issue) return;
+  const map = getPhotoTaskMap();
+  if (map[issueId]) {
+    // Task already mapped; nothing to do
+    return;
+  }
+  const list = document.querySelector('#tab-overview .task-list');
+  if (!list) return;
+  const taskId = 'photo-' + issueId;
+  const item = document.createElement('div');
+  item.className = 'task-item';
+  item.setAttribute('data-task-id', taskId);
+  item.setAttribute('data-due', 'Due');
+  const label = 'Prep · ' + (issue.title || 'Photo-based improvement');
+  item.innerHTML = `
+    <div class="task-name-wrap">
+      <div class="task-check" onclick="toggleTask(this)" role="button" tabindex="0" aria-label="Mark complete"></div>
+      <span>${label}</span>
+    </div>
+    <div class="task-due">Due</div>
+    <div class="task-notes-wrap"><textarea class="task-notes-input" placeholder="Add a note…" onchange="saveTaskNote(this)" onblur="saveTaskNote(this)"></textarea></div>
+    <button type="button" class="task-note-toggle" onclick="toggleTaskNote(this)">+ Add note</button>
+  `;
+  list.appendChild(item);
+  map[issueId] = taskId;
+  setPhotoTaskMap(map);
+  // Ensure any existing completion/notes state logic applies
+  try {
+    restoreDashboardTasks();
+  } catch (e) {}
+  // Re-render controls to reflect "added" state
+  renderPhotoIssues();
+}
 
 // WAITLIST
 async function submitWaitlist() {
